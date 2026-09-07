@@ -1,0 +1,410 @@
+    :root {
+        /* Layout Variables */
+        --tab-width: 72px; --m-tab-height: 60px; --ad-banner-h: 120px; --panel-w: 360px;
+
+        /* Light Theme (Toss) */
+        --primary: #3182F6;
+        --primary-light: #EBF3FE;
+        --primary-deep: #1552B8; /* 중제목용 — 로고보단 작고 본문보단 강조된 톤 */
+        --bg-app: #F2F4F6;
+        --bg-surface: #FFFFFF;
+        --bg-panel: #F7F8FA;
+        --text-primary: #191F28;
+        --text-secondary: #6B7684;
+        --border-light: #E5E8EB;
+        --border-dark: rgba(0, 0, 0, 0.06);
+        --shadow-sm: 0 1px 8px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark Theme (Toss Dark) */
+    body.dark-theme {
+        --primary: #4B93FF;
+        --primary-light: rgba(75, 147, 255, 0.15);
+        --primary-deep: #7FB3FF; /* 다크모드에선 더 밝혀야 배경 위에서 도드라짐 */
+        --bg-app: #101216;
+        --bg-surface: #1C1C1E;
+        --bg-panel: #25252B;
+        --text-primary: #FFFFFF;
+        --text-secondary: #98989E;
+        --border-light: #2C2C2E;
+        --border-dark: rgba(255, 255, 255, 0.06);
+        --shadow-sm: 0 1px 8px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body, html { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; }
+
+    /* 전체 화면 고정 */
+    body, html { width: 100%; height: 100%; overflow: hidden; background: var(--bg-app); color: var(--text-primary); transition: background-color 0.3s ease, color 0.3s ease; }
+    
+    #app { 
+        display: flex; 
+        width: 100vw; 
+        height: 100vh; 
+        flex-direction: row; /* PC 기본: 가로 배치 */
+    }
+
+    /* ===== PC 영구 고정 왼쪽 패널 ===== */
+    #persistent-left-panel {
+        width: var(--panel-w);
+        height: 100%;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        z-index: 110;
+        position: relative;
+        flex-shrink: 0;
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    #persistent-left-panel .main-title-box { margin: 12px 16px; }
+    #persistent-left-panel .app-logo {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-family: 'Jua', 'Pretendard', 'Noto Sans KR', sans-serif;
+        font-size: 1.7rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+        gap: 8px;
+        letter-spacing: -0.5px;
+    }
+    #persistent-left-panel .app-logo .jjeom { color: var(--primary); }
+    .app-subtitle-row { display: flex; align-items: center; gap: 8px; margin: 5px 0 0; }
+    .app-subtitle-rule { width: 14px; height: 1px; background: var(--primary); opacity: 0.4; flex-shrink: 0; }
+    .app-subtitle-text { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.02em; white-space: nowrap; }
+    .app-subtitle-plain { text-align: left; margin: 5px 0 0; }
+    .app-logo-icon {
+        font-size: 1.3em;
+    }
+    #persistent-left-panel #plp-list-header { padding: 0 16px 15px; flex-shrink: 0; }
+    #persistent-left-panel .filter-row { display: flex; gap: 6px; margin-top: 10px; }
+    #persistent-left-panel .filter-item {
+        flex: 1.5; padding: 8px 10px; border-radius: 10px;
+        border: 1px solid var(--border-light);
+        background: var(--bg-app); font-size: 0.75em; cursor: pointer;
+        text-align: center; text-align-last: center; display: flex; align-items: center; justify-content: center;
+        gap: 4px;
+        min-height: 36px; white-space: nowrap; font-weight: 700;
+        color: var(--text-secondary); transition: all 0.15s ease;
+        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    }
+    #persistent-left-panel .filter-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+    #persistent-left-panel #plp-locate-btn svg { width: 18px; height: 18px; }
+    #persistent-left-panel .filter-item:hover { background-color: var(--bg-panel); color: var(--text-primary); border-color: var(--text-primary); }
+    #persistent-left-panel .filter-item:focus { outline: none; border-color: var(--text-primary); }
+    #persistent-left-panel select.filter-item {
+        appearance: none; -webkit-appearance: none;
+        padding-left: 8px; padding-right: 22px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%236B7684' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat; background-position: right 8px center;
+    }
+    body.dark-theme #persistent-left-panel select.filter-item {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2398989E' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    }
+    #persistent-left-panel select.filter-item option {
+        text-align: center;
+    }
+    #persistent-left-panel #plpRegionFilter,
+    #persistent-left-panel #plpSortToggle { flex: 1.2; }
+    #persistent-left-panel #plpDinnerToggle { flex: 0.75; font-size: 0.7em; padding: 7px 4px; }
+    #persistent-left-panel #plpSortToggle,
+    #persistent-left-panel #plpDinnerToggle { color: var(--text-primary); }
+    #persistent-left-panel .home-inline-btn { flex: 0.5; font-size: 1.1em; }
+    #persistent-left-panel #plp-home-btn svg { width: 20px; height: 20px; }
+    #persistent-left-panel #plp-home-btn { background: var(--primary); border-color: var(--primary); }
+    #persistent-left-panel #plp-home-btn:hover { background: var(--primary); border-color: var(--primary); opacity: 0.85; }
+    #persistent-left-panel #plp-list-scroll { flex: 1; overflow-y: auto; padding: 4px 12px 20px; }
+    #persistent-left-panel #plp-list-scroll::-webkit-scrollbar { width: 4px; }
+    #persistent-left-panel #plp-list-scroll::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+    #persistent-left-panel .restaurant-card {
+        padding: 14px 16px; background: var(--bg-surface); border-radius: 14px;
+        margin-bottom: 8px; border: 1px solid var(--border-light); cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    #persistent-left-panel .restaurant-card:hover { background: var(--border-dark); border-color: var(--text-primary); }
+    #persistent-left-panel .restaurant-card.selected-card {
+        background: var(--bg-app);
+        border-color: var(--text-primary);
+        box-shadow: 0 0 0 1.5px var(--text-primary);
+    }
+    #persistent-left-panel .dinner-badge { background: #EEF2FF; color: #4F46E5; padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+
+    /* 검색창 스타일 */
+    #plpSearchInput {
+        width: 100%; padding: 11px 16px; border-radius: 12px;
+        border: 1px solid var(--border-light);
+        background: var(--bg-app);
+        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+        font-size: 0.9em; outline: none; color: var(--text-primary); transition: all 0.15s ease;
+    }
+    #plpSearchInput:focus { border-color: var(--primary); background: var(--bg-surface); box-shadow: 0 0 0 3px var(--primary-light); }
+    body.dark-theme #plpSearchInput:focus { box-shadow: 0 0 0 3px rgba(75, 147, 255, 0.2); }
+    #plpSearchInput::placeholder { color: var(--text-secondary); }
+
+    /* 모바일에서는 영구 패널 숨김 */
+    @media (max-width: 768px) {
+        #persistent-left-panel { display: none !important; }
+    }
+
+    /* PC 전용 탭 내비게이션 로고 */
+    .nav-logo {
+        width: 100%;
+        padding: 0;
+        margin-top: 8px; /* 위쪽 살짝 틈 주기 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-sizing: border-box;
+        margin-bottom: 4px;
+        transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+    .nav-logo:hover {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+    .nav-logo svg {
+        width: 40px;
+        height: 40px;
+        border-radius: 22%;
+        box-shadow: 0 4px 12px rgba(49,130,246,0.35);
+    }
+
+    @media (max-width: 768px) {
+        .nav-logo { display: none !important; }
+    }
+
+    /* [PC] 왼쪽 탭 네비게이션 */
+    #tab-nav {
+        width: var(--tab-width);
+        height: 100%;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border-light);
+        display: flex;
+        flex-direction: column;
+        z-index: 2000;
+        padding: 0;
+        gap: 0;
+        transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .tab-item {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        cursor: pointer; color: var(--text-secondary);
+        transition: color 0.15s ease, background 0.15s ease;
+        margin: 0; padding: 20px 0; border-radius: 0;
+        border-left: 4px solid transparent;
+    }
+    .tab-item.active { 
+        background: #EFF6FF; 
+        color: #1E3A8A; 
+        border-left-color: #1E3A8A;
+    }
+    body.dark-theme .tab-item.active { 
+        background: rgba(49, 130, 246, 0.15); 
+        color: #4B93FF; 
+        border-left-color: #4B93FF;
+    }
+    .tab-icon { width: 24px; height: 24px; margin-bottom: 6px; transition: transform 0.2s ease; }
+    .tab-text { font-size: 11px; font-weight: 700; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; letter-spacing: -0.2px; }
+    .tab-item:hover:not(.active) { color: var(--text-primary); background: var(--bg-app); }
+    .tab-item.active .tab-icon { transform: scale(1.05); }
+
+    /* [PC] 오른쪽 컬럼 (콘텐츠 + 광고) */
+    #right-column {
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* 식당 상세 팝업 (지도 탭 외에서 사용) */
+    #plp-detail-popup {
+        display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+        width: 420px; max-width: calc(100vw - 32px); max-height: 88vh;
+        background: var(--bg-surface);
+        border-radius: 20px; border: 1px solid var(--border-light);
+        box-shadow: 0 8px 40px rgba(0,0,0,0.12); z-index: 9000;
+        flex-direction: column; overflow: hidden; opacity: 0;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    #plp-detail-popup.open { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    #plp-detail-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+        z-index: 8999; opacity: 0; transition: opacity 0.25s ease;
+    }
+    #plp-detail-overlay.open { display: block; opacity: 1; }
+
+    .plp-popup-header { padding: 24px 24px 16px; border-bottom: 1px solid var(--border-light); position: relative; }
+    .plp-popup-title { font-size: 1.25em; font-weight: 800; color: var(--text-primary); padding-right: 40px; line-height: 1.4; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; }
+    .plp-popup-close {
+        position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--text-secondary);
+        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; background: var(--bg-app); transition: all 0.15s; font-size: 1em;
+    }
+    .plp-popup-close:hover { background: var(--primary-light); color: var(--primary); }
+
+    .plp-popup-body { padding: 20px 24px 24px; overflow-y: auto; flex: 1; }
+    .plp-popup-body::-webkit-scrollbar { width: 4px; }
+    .plp-popup-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 10px; }
+
+    .plp-popup-desc { font-size: 0.9em; color: var(--text-secondary); line-height: 1.8; margin-bottom: 16px; word-break: keep-all; }
+
+    .plp-popup-info {
+        font-size: 0.88em; color: var(--text-secondary); background: var(--bg-app);
+        padding: 14px 16px; border-radius: 12px; margin-bottom: 16px;
+    }
+    .plp-popup-info p { margin-bottom: 6px; color: var(--text-primary); }
+    .plp-popup-info p:last-child { margin-bottom: 0; }
+
+    .plp-popup-sns { display: flex; gap: 10px; margin-bottom: 16px; }
+    .plp-popup-sns a {
+        flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+        padding: 11px; border-radius: 12px; color: #fff; text-decoration: none;
+        font-weight: 700; font-size: 0.82em; transition: opacity 0.15s;
+    }
+    .plp-popup-sns a:hover { opacity: 0.88; }
+    .plp-popup-sns .insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+    .plp-popup-sns .kakao-btn { background: #FEE500; color: #3C1E1E; }
+    .plp-popup-sns .naver-btn { background: #03C75A; }
+
+    .plp-popup-map-btn {
+        width: 100%; padding: 15px; border: none; border-radius: 14px;
+        background: var(--primary); color: #fff; font-weight: 700; font-size: 0.95em;
+        cursor: pointer; font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        transition: opacity 0.15s;
+    }
+    .plp-popup-map-btn:hover { opacity: 0.88; }
+
+    /* [PC] 콘텐츠 영역 */
+    #content-area {
+        flex: 1;
+        height: 100%; /* 네이버 지도 등 height:100% 자식을 위해 반드시 필요 */
+        min-height: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* [PC] 하단 광고 배너 */
+    #pc-ad-banner {
+        width: 100%; height: var(--ad-banner-h);
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border-light);
+        position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        z-index: 100; flex-shrink: 0;
+    }
+    .ad-blur-bg {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; filter: blur(12px) brightness(0.4); transform: scale(1.1);
+    }
+    .ad-main-img {
+        /* object-fit: fill이었을 땐 원본 이미지 비율을 무시하고 억지로 늘리거나
+           찌그러뜨려서 채웠고, cover로 바꾼 뒤에는 비율은 유지됐지만 이 박스
+           자체가 배너 폭의 25%(PC)/40%(모바일) × 높이 90px라는 고정된 틀이라
+           사진 비율이 이 틀과 안 맞으면 여전히 잘려나갔음(600x337, 1454x818,
+           1280x720 등 광고 이미지마다 원본 비율이 제각각이라 항상 뭔가는 잘림).
+           contain으로 바꿔서 사진을 통째로 다 보여주고, 남는 여백은 뒤에 이미
+           깔려있는 .ad-blur-bg(블러 배경, 배너 전체를 채움)가 자연스럽게 메꿔줌
+           — 앞으로 어떤 비율의 광고 이미지가 들어와도 안 잘리게 됨.
+        */
+        position: relative; height: 100%; width: 35%; object-fit: contain; z-index: 1;
+    }
+    #pc-ad-banner .ad-placeholder {
+        width: 728px; max-width: 100%; height: var(--ad-banner-h);
+        background: var(--bg-app); border-radius: 4px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; color: var(--text-secondary);
+        font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    }
+
+    /* [모바일] 광고 배너 (최상단 고정) */
+    #mobile-ad-banner {
+        display: none; /* PC에서는 숨김 */
+    }
+
+    /* [모바일] PC 광고 숨김 */
+    @media (max-width: 768px) {
+        #pc-ad-banner { display: none; }
+    }
+
+    /* [모바일] UI 대응 */
+    @media (max-width: 768px) {
+        /* 모바일은 화면이 좁아 배너가 세로 공간을 많이 차지하므로 PC(120px)보다 낮게 */
+        :root { --ad-banner-h: 84px; }
+        #app { flex-direction: column; } /* 모바일: 세로 배치 */
+
+        #right-column {
+            flex: 1;
+            height: auto;
+            display: block; /* 모바일에서는 flex 해제 */
+        }
+
+        /* 모바일 최상단 광고 배너 */
+        #mobile-ad-banner {
+            display: flex; align-items: center; justify-content: center;
+            position: fixed; top: 0; left: 0; right: 0;
+            width: 100%; height: var(--ad-banner-h);
+            background: #000; z-index: 4000; overflow: hidden;
+        }
+        #mobile-ad-banner .ad-placeholder {
+            width: 320px; max-width: 100%; height: 50px; background: #e2e8f0; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8;
+        }
+        
+        /* 모바일에서 광고 메인 이미지는 55% 차지하도록 오버라이드 */
+        .ad-main-img {
+            width: 55%;
+        }
+
+        /* 하단 네비게이션 탭 (토스 스타일 플랫 바) */
+        #tab-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0; right: 0;
+            width: 100%;
+            height: calc(56px + env(safe-area-inset-bottom));
+            padding-bottom: env(safe-area-inset-bottom);
+            flex-direction: row;
+            border-right: none;
+            border-top: 1px solid var(--border-light);
+            padding-left: 0; padding-right: 0;
+            border-radius: 0;
+            box-shadow: 0 -1px 0 var(--border-light);
+            gap: 0;
+        }
+
+        .tab-item {
+            border-left: none;
+            border-bottom: none;
+            flex-direction: column;
+            margin: 0;
+            padding: 8px 0 0;
+            border-radius: 0;
+            height: 100%;
+            flex: 1;
+        }
+        .tab-item.active {
+            background: transparent; color: var(--primary);
+        }
+        body.dark-theme .tab-item.active { background: transparent; }
+        .tab-icon { width: 22px; height: 22px; margin-bottom: 3px; }
+        .tab-item.active .tab-icon { transform: none; }
+        .tab-text { font-size: 10px; }
+
+        /* 콘텐츠 영역 */
+        #content-area {
+            height: calc(100vh - 56px - var(--ad-banner-h) - env(safe-area-inset-bottom));
+            width: 100%;
+            margin-top: var(--ad-banner-h);
+        }
+    }

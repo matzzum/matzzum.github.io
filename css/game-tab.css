@@ -1,0 +1,379 @@
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100%;
+    background: var(--bg-app);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: clamp(10px, 2vh, 25px) 16px;
+    box-sizing: border-box;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    gap: clamp(6px, 1.5vh, 16px);
+    color: var(--text-primary);
+}
+
+/* --- Header --- */
+.roulette-header {
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+.roulette-header h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.roulette-title-icon {
+    width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
+    background: var(--primary-light, #EBF3FE); color: var(--primary, #3182F6);
+    display: flex; align-items: center; justify-content: center;
+}
+.roulette-title-icon svg { width: 22px; height: 22px; }
+@media (max-width: 768px) {
+    .roulette-header h1 { font-size: 1.45rem; }
+    .roulette-header p { font-size: 0.75rem; }
+}
+.roulette-header p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 6px;
+    transition: all 0.3s ease;
+}
+
+/* --- Game Type Toggle (점심 / 커피) --- */
+.game-type-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.5);
+    border: 1px solid rgba(12,48,96,0.12);
+    border-radius: 50px;
+    padding: 3px;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+.game-type-btn {
+    padding: 7px 24px;
+    border: none;
+    background: transparent;
+    color: rgba(12,48,96,0.5);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+.game-type-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 12px rgba(49,130,246,0.35);
+}
+
+/* --- 모드 토글 (미니/일반) --- */
+.mode-toggle {
+    display: flex;
+    width: 100%;
+    max-width: 320px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 50px;
+    padding: 4px;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+}
+@media (max-width: 768px) {
+    .mode-toggle { max-width: 280px; }
+    .mode-btn { padding: 8px 0; font-size: 0.78rem; }
+}
+.mode-btn {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    line-height: 1.4;
+    text-align: center;
+    white-space: nowrap;
+}
+.mode-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(49,130,246,0.35);
+}
+.mode-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; }
+.mode-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* --- 자동 배치(왼쪽) + 돌려돌려(오른쪽) 한 줄 배치 ---
+   예전엔 자동 배치 버튼이 휠 위에 따로 있어서 그만큼 전체 높이가 늘어나
+   모바일에서 맨 아래(돌려돌려 버튼)가 광고 배너에 가려지는 문제가 있었음.
+   휠 아래 한 줄에 같이 두어 세로 공간을 절약함. */
+.roulette-actions {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.roulette-actions .auto-arrange-btn,
+.roulette-actions .spin-btn {
+    flex: 1 1 0;
+    justify-content: center;
+}
+.auto-arrange-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 44px;
+    border-radius: 50px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+@media (max-width: 768px) {
+    .auto-arrange-btn { padding: 11px 36px; font-size: 0.95rem; }
+}
+.auto-arrange-btn svg { width: 18px; height: 18px; color: var(--primary); flex-shrink: 0; }
+.auto-arrange-btn:hover { opacity: 0.85; }
+.auto-arrange-btn:active { transform: scale(0.97); }
+
+/* --- 휠 위에 떠서 나타나는 칸 편집기 --- */
+/* 칸을 목록으로 따로 안 두고, 이미 나뉜 휠 조각을 탭하면 그 자리 바로 위에
+   입력창이 뜨는 방식(불필요하게 칸을 더 쓰지 않기 위함) */
+.roulette-slot-editor {
+    position: absolute;
+    width: 150px;
+    z-index: 70;
+}
+.roulette-slot-editor input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 2px solid var(--primary, #3b82f6);
+    background: var(--bg-surface);
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.roulette-slot-editor-dropdown {
+    margin-top: 4px;
+    max-height: 160px;
+    overflow-y: auto;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+.roulette-slot-option {
+    padding: 7px 9px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.roulette-slot-option:hover { background: rgba(255,255,255,0.08); }
+.roulette-slot-option.empty { color: var(--text-secondary); font-weight: 500; cursor: default; }
+.roulette-slot-option.clear { color: #ef4444; }
+
+/* --- Wheel Area --- */
+.wheel-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    width: min(42vh, 420px, calc(100vw - 40px));
+    height: min(42vh, 420px, calc(100vw - 40px));
+}
+
+@media (max-width: 768px) {
+    .wheel-area {
+        /* 90px 광고 대응을 위해 휠 사이즈 대폭 축소 */
+        width: min(35vh, 290px);
+        height: min(35vh, 290px);
+    }
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 28px solid #FFD700;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+    z-index: 10;
+}
+@media (max-width: 768px) {
+    .wheel-pointer {
+        border-top-width: 22px;
+        border-left-width: 11px;
+        border-right-width: 11px;
+        top: -8px;
+    }
+}
+canvas {
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px var(--bg-surface), 0 0 40px rgba(0,0,0,0.15);
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* --- Spin Button --- */
+.spin-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 44px;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    font-weight: 900;
+    font-size: 1.05rem;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(49,130,246,0.4);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+@media (max-width: 768px) {
+    .spin-btn { padding: 11px 36px; font-size: 0.95rem; }
+}
+.spin-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.spin-btn:hover:not(:disabled) { opacity: 0.88; }
+.spin-btn:active:not(:disabled) { transform: scale(0.97); }
+.spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --- Result Card --- */
+.result-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 16px 20px;
+    text-align: center;
+    color: var(--text-primary);
+    width: 100%;
+    max-width: 320px;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+    min-height: 135px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+@media (max-width: 768px) {
+    .result-card { min-height: 120px; padding: 8px 14px; margin-top: 5px; }
+}
+.result-card.visible {
+    opacity: 1;
+    transform: scale(1.02);
+}
+.result-label {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 800;
+}
+.result-name {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.result-name .emoji-icon {
+    width: 26px; height: 26px; flex-shrink: 0; color: var(--primary);
+}
+.result-name .emoji-icon.spinning { animation: emoji-spin 0.9s linear infinite; }
+@keyframes emoji-spin { to { transform: rotate(360deg); } }
+.result-meta {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.result-meta .meta-item { display: inline-flex; align-items: center; gap: 4px; }
+.result-meta .meta-item svg { width: 13px; height: 13px; flex-shrink: 0; }
+.result-meta .meta-sep { opacity: 0.5; }
+.result-links {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.result-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    font-family: 'Nunito', 'Noto Sans KR', sans-serif;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    background: var(--bg-panel);
+    cursor: pointer;
+}
+.result-link-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.result-link-btn:hover {
+    background: rgba(12,48,96,0.12);
+    transform: scale(1.04);
+}
+.result-link-btn.instagram { background: linear-gradient(135deg, rgba(193,53,132,0.15), rgba(253,81,29,0.15)); border-color: rgba(253,81,29,0.3); color: #c13584; }
+.result-link-btn.kakao { background: rgba(254,229,0,0.35); border-color: rgba(200,160,0,0.35); color: #3C1E1E; }
+

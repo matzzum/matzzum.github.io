@@ -1,0 +1,345 @@
+:root { 
+    --panel-w: 360px; 
+    --detail-w: 320px; 
+}
+
+#map-container { display: flex; width: 100%; height: 100%; position: relative; overflow: hidden; }
+
+/* 목록 패널 (모바일용) */
+#left-panel { 
+    width: var(--panel-w); height: 100%; background: var(--bg-panel);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-right: 1px solid var(--border-dark);
+    display: flex; flex-direction: column; z-index: 110; position: relative;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 상세 패널 */
+#detail-panel {
+    position: absolute; left: 0; top: 0; width: var(--detail-w); height: 100%;
+    background: var(--bg-surface); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-right: 1px solid var(--border-light); z-index: 100;
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+}
+#detail-panel.open { transform: translateX(0); }
+/* 모바일에서는 left-panel이 있으므로 그 옆에 위치 */
+@media (max-width: 768px) {
+    #detail-panel { left: var(--panel-w); }
+}
+
+#map-area { 
+    flex: 1; height: 100%; position: relative; z-index: 1; 
+    display: flex; flex-direction: column; 
+}
+#map { width: 100%; flex: 1; min-height: 0; }
+
+
+
+/* 헤더 및 필터 */
+.main-title-box { margin: 12px 16px; padding: 0; background: transparent; border: none; }
+.app-logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    gap: 8px;
+    letter-spacing: -0.5px;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+.app-logo-icon { font-size: 1.3em; }
+
+/* 다크 모드 맵 필터 — 네이버 지도는 CARTO/Stadia처럼 무료 다크 타일이 없어
+   CSS로 색을 반전시켜 흉내냄(invert+hue-rotate 180deg는 두 번 적용하면
+   정확히 원래대로 돌아오는 성질이 있음). 문제는 이 filter가 #map의 자식
+   전부(마커 포함)에 그대로 걸린다는 것 — 그래서 우리가 만드는 마커
+   콘텐츠(.map-marker-fix)에는 똑같은 filter를 한 번 더 걸어 상쇄시켜서
+   마커만 원래 색 그대로 보이게 함.
+   ⚠️ 예전엔 이 클래스가 "brightness(110%) contrast(105%)"였는데, 이건
+   구 지도 스택(Stadia Dark 타일)이 이미 어두운 타일을 쓸 때 밝기만 살짝
+   보정하던 값 — 네이버로 옮긴 뒤에도 안 고쳐서 밝은 지도에 거의 아무
+   효과가 없었음(다크모드를 켜도 지도만 그대로 밝게 보이던 원인). */
+.dark-map-filter {
+    filter: invert(100%) hue-rotate(180deg);
+}
+.dark-map-filter .map-marker-fix {
+    filter: invert(100%) hue-rotate(180deg);
+}
+
+#list-header { padding: 0 16px 15px; flex-shrink: 0; }
+.filter-row { display: flex; gap: 6px; margin-top: 10px; }
+.filter-item {
+    flex: 1.5; padding: 7px 8px; border-radius: 10px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-surface); font-size: 0.75em; cursor: pointer;
+    text-align: center; text-align-last: center; display: flex; align-items: center; justify-content: center;
+    gap: 4px;
+    min-height: 34px; white-space: nowrap; font-weight: 700;
+    color: var(--text-secondary); transition: all 0.15s;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+.filter-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+#locate-btn svg { width: 18px; height: 18px; }
+.filter-item:hover { background-color: var(--bg-panel); color: var(--text-primary); border-color: var(--text-primary); }
+.filter-item:focus { outline: none; border-color: var(--text-primary); }
+select.filter-item {
+    appearance: none; -webkit-appearance: none;
+    padding-left: 8px; padding-right: 22px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%236B7684' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+}
+body.dark-theme select.filter-item {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2398989E' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+}
+select.filter-item option {
+    text-align: center;
+}
+#regionFilter, #sortToggle { flex: 1.2; }
+#dinnerToggle { flex: 0.75; font-size: 0.7em; padding: 7px 4px; }
+#sortToggle, #dinnerToggle { color: var(--text-primary); }
+.home-inline-btn { flex: 0.5; font-size: 1.1em; }
+#home-btn svg { width: 20px; height: 20px; }
+#home-btn { background: var(--primary); border-color: var(--primary); }
+#home-btn:hover { background: var(--primary); border-color: var(--primary); opacity: 0.85; }
+
+#list-scroll { flex: 1; overflow-y: auto; padding: 0 16px 20px; }
+
+.dinner-badge { background: #EEF2FF; color: #4F46E5; padding: 2px 6px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+
+/* SNS 버튼 영역 */
+.sns-buttons { display: flex; gap: 8px; margin-top: 15px; }
+.insta-btn, .kakao-btn {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 8px; border-radius: 10px; color: #fff; text-decoration: none; font-weight: 700; font-size: 0.8em;
+    transition: opacity 0.15s;
+}
+.insta-btn:hover, .kakao-btn:hover { opacity: 0.85; }
+.insta-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+.kakao-btn { background: #FEE500; color: #3C1E1E; }
+.naver-btn { background: #03C75A; }
+
+/* 한줄평 섹션 */
+.review-section { margin-top: 20px; border-top: 1px solid var(--border-light); padding-top: 16px; }
+.review-section-title { font-size: 0.9em; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.review-input-row { display: flex; gap: 6px; margin-bottom: 16px; align-items: stretch; width: 100%; box-sizing: border-box; }
+.review-input-row input {
+    padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-light); background: var(--bg-app); color: var(--text-primary);
+    font-size: 0.85em; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; outline: none; box-sizing: border-box; transition: all 0.15s;
+}
+.review-input-row input::placeholder { color: var(--text-secondary); }
+.review-input-row input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+body.dark-theme .review-input-row input:focus { box-shadow: 0 0 0 3px rgba(75, 147, 255, 0.2); }
+.review-input-row select {
+    padding: 10px 6px; border-radius: 10px; border: 1px solid var(--border-light); background: var(--bg-app); color: var(--text-primary);
+    font-size: 0.83em; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; outline: none; box-sizing: border-box; transition: all 0.15s;
+    flex: 0 0 92px;
+}
+.review-input-row select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+body.dark-theme .review-input-row select:focus { box-shadow: 0 0 0 3px rgba(75, 147, 255, 0.2); }
+.review-input-row button {
+    padding: 0 14px; border-radius: 10px; border: none; background: var(--primary); color: #fff;
+    font-weight: 700; font-size: 0.85em; cursor: pointer; white-space: nowrap;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif; flex-shrink: 0;
+    transition: opacity 0.15s;
+}
+.review-input-row button:hover { opacity: 0.85; }
+/* 한줄평 입력행: 닉네임을 윗줄 전체 너비로, 내용+등록 버튼은 아랫줄에 배치
+   (닉네임+내용+버튼이 한 줄에 다 들어가면 좁아서 서로 겹쳐 보이던 문제 수정) */
+.review-input-stacked { flex-direction: column; align-items: stretch; }
+
+/* 정보 수정 제안: 평소엔 접혀 있다가 펼치면 가격/영업시간/URL/폐업 제보를
+   한 화면에서 다 채우고 한 번에 제출하는 방식 */
+.edit-suggest-header { cursor: pointer; user-select: none; justify-content: space-between; }
+.edit-suggest-toggle-btn { font-size: 0.78em; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 3px; }
+.edit-suggest-chevron { display: inline-block; transition: transform 0.2s ease; }
+.edit-suggest-chevron.open { transform: rotate(180deg); }
+.edit-suggest-body { margin-top: 12px; }
+.edit-field-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.edit-field-row label { flex: 0 0 76px; font-size: 0.82em; font-weight: 700; color: var(--text-secondary); }
+.edit-field-row label.checkbox-label { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.edit-days-list { flex: 1; display: flex; gap: 4px; min-width: 0; }
+/* 예전엔 <label>+숨긴 체크박스 조합이었는데, 체크박스를 width/height:0으로
+   숨기는 패턴이 일부 모바일 브라우저에서 label 클릭이 체크박스로 제대로
+   전달 안 돼 탭해도 반응 없는 문제가 있었음(폼 컨트롤 없이 그냥 div를
+   직접 탭하는 방식으로 바꿔서 이 문제 자체를 없앰 — 앱의 다른 토글
+   버튼들(.mode-btn 등)과 동일한 방식). */
+.edit-day-chip {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 8px 0; border-radius: 8px; border: 1px solid var(--border-light);
+    background: var(--bg-app); color: var(--text-secondary);
+    font-size: 0.78em; font-weight: 700; cursor: pointer; user-select: none; transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.edit-day-chip.checked { background: var(--primary); border-color: var(--primary); color: #fff; }
+.edit-field-row input[type="text"] {
+    flex: 1; min-width: 0; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--border-light);
+    background: var(--bg-app); color: var(--text-primary); font-size: 0.85em;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif; outline: none; box-sizing: border-box; transition: all 0.15s;
+}
+.edit-field-row input[type="text"]:disabled { opacity: 0.5; }
+.edit-field-row input[type="text"]:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+body.dark-theme .edit-field-row input[type="text"]:focus { box-shadow: 0 0 0 3px rgba(75, 147, 255, 0.2); }
+.edit-suggest-submit-btn {
+    width: 100%; margin-top: 4px; padding: 10px; border-radius: 10px; border: none;
+    background: var(--primary); color: #fff; font-weight: 800; font-size: 0.88em; cursor: pointer;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif; transition: opacity 0.15s;
+}
+.edit-suggest-submit-btn:hover { opacity: 0.88; }
+.review-input-stacked input#reviewNickname { flex: none; width: 100%; }
+.review-input-bottom { display: flex; gap: 6px; width: 100%; box-sizing: border-box; }
+.review-input-bottom input { flex: 1; min-width: 0; }
+.review-cooldown-msg.success { color: var(--primary); }
+
+.review-list { display: flex; flex-direction: column; gap: 8px; }
+.review-item { 
+    padding: 12px 14px; background: var(--bg-panel); border-radius: 12px; border: 1px solid var(--border-light);
+    font-size: 0.85em; color: var(--text-primary); line-height: 1.6; display: flex; justify-content: space-between; align-items: flex-start;
+}
+.review-item-text { flex: 1; word-break: break-all; }
+.review-item-date { font-size: 0.75em; color: var(--text-secondary); white-space: nowrap; margin-left: 8px; }
+.review-empty { font-size: 0.85em; color: var(--text-secondary); text-align: center; padding: 16px 0; background: var(--border-dark); border-radius: 12px; }
+.review-cooldown-msg { font-size: 0.8em; color: #ef4444; margin-top: 4px; font-weight: 700; }
+
+/* ✅ PC에서 접기/펼치기 숨김 */
+.drag-handle { display: none; }
+
+/* PC에서 left-panel 숨김 (persistent-left-panel이 대신함) */
+@media (min-width: 769px) {
+    #left-panel { display: none !important; }
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .main-title-box { display: none !important; }
+    
+    /* ✅ 모바일에서만 접기/펼치기 표시 */
+    .drag-handle { display: flex !important; justify-content: center; padding: 12px 0 8px; cursor: pointer; }
+
+    #left-panel { 
+        position: fixed; bottom: 55px; left: 0; right: 0; width: 100%; height: 38dvh; 
+        border-radius: 24px 24px 0 0; z-index: 1001; 
+        transform: translateY(0);
+    }
+    
+    #left-panel.collapsed { transform: translateY(calc(38dvh - 45px)); }
+    
+    #detail-panel { 
+        position: fixed; left: 0; width: 100%; height: 38dvh; bottom: 55px; top: auto; 
+        border-radius: 24px 24px 0 0; z-index: 1010; transform: translateY(calc(100% + 60px)); 
+    }
+    #detail-panel.open { transform: translateY(0); }
+    
+    .toggle-btn-text { background: var(--bg-surface); padding: 5px 20px; border-radius: 20px; font-size: 11px; font-weight: 800; color: var(--text-secondary); border: 1px solid var(--border-light); }
+    
+    .filter-item { min-height: 30px; }
+}
+
+.restaurant-card { 
+    padding: 12px 14px; background: var(--bg-surface); border-radius: 12px; 
+    margin-bottom: 8px; border: 1px solid var(--border-light); cursor: pointer;
+}
+#searchInput {
+    width: 100%; padding: 11px 15px; border-radius: 12px;
+    border: 1px solid var(--border-light); background: var(--bg-surface);
+    color: var(--text-primary); outline: none; font-size: 0.9em;
+    transition: all 0.15s ease;
+}
+#searchInput:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+body.dark-theme #searchInput:focus { box-shadow: 0 0 0 3px rgba(75, 147, 255, 0.2); }
+#searchInput::placeholder { color: var(--text-secondary); }
+
+#location-picker-ui {
+    display: none;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    background: var(--bg-surface);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 16px 20px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-light);
+    text-align: center;
+}
+#location-picker-ui.active { display: block; animation: popup-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes popup-in { from { opacity: 0; transform: translate(-50%, -80%); } to { opacity: 1; transform: translate(-50%, -50%); } }
+
+/* GPS 위치 권한 안내 배너 — 현재 위치를 못 가져와서 기본 시야로 시작했을 때 */
+.gps-permission-banner {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(400px, calc(100% - 32px));
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    padding: 12px 14px;
+    box-shadow: var(--shadow-lg);
+}
+.gps-permission-banner[hidden] { display: none; }
+.gps-permission-icon { font-size: 1.3em; flex-shrink: 0; }
+.gps-permission-text { flex: 1; font-size: 0.8em; font-weight: 600; color: var(--text-primary); line-height: 1.5; }
+.gps-permission-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.gps-permission-retry {
+    padding: 6px 12px; border: none; border-radius: 10px;
+    background: var(--primary); color: #fff; font-weight: 800; font-size: 0.76em;
+    cursor: pointer; white-space: nowrap;
+}
+.gps-permission-close {
+    padding: 4px 8px; border: none; border-radius: 8px;
+    background: transparent; color: var(--text-secondary); font-size: 0.76em; font-weight: 700;
+    cursor: pointer;
+}
+#picker-crosshair {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    z-index: 1000;
+    pointer-events: none;
+    font-size: 38px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+#picker-crosshair.active { display: block; }
+.picker-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    margin: 6px;
+    font-family: inherit;
+    transition: transform 0.2s;
+}
+.picker-btn:hover { transform: scale(1.05); }
+.picker-btn-save { background: var(--primary); color: #fff; }
+.picker-btn-cancel { background: var(--border-dark); color: var(--text-primary); border: 1px solid var(--border-light); }
+/* GPS 현재 위치 마커 애니메이션 */
+@keyframes gps-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(59,130,246,0.6); }
+    70%  { box-shadow: 0 0 0 12px rgba(59,130,246,0); }
+    100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
+}
+.gps-dot {
+    width: 18px; height: 18px;
+    background: #3b82f6;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    animation: gps-pulse 1.8s infinite;
+}
+/* GPS 이동 버튼 (floating 제거, 필터로 이동) */
+#gps-btn.locating { animation: gps-pulse 1s infinite; background: #eff6ff; border-radius: 10px; }
