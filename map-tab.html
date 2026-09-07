@@ -1574,13 +1574,26 @@
         }
     }
 
+    // PC에서 한줄평을 아주 짧은 시간 안에 여러 번 제출되는 버그가 있었음. 원인
+    // 두 가지: ① 쿨다운(COOLDOWN_KEY)은 Firestore 저장이 끝난 "뒤"에야
+    // localStorage에 기록되는데, 그 저장 자체가 비동기라 완료 전에 또 호출이
+    // 들어오면 쿨다운 체크를 그대로 통과해버림. ② Enter 키 리스너가
+    // document에 등록돼 있는데(맨 아래), 이 탭 스크립트는 탭을 오갈 때마다
+    // 통째로 재실행되면서 리스너가 지워지지 않고 계속 쌓여서, 세션 중 지도
+    // 탭을 여러 번 방문했으면 엔터 한 번에 그 방문 횟수만큼 submitReview()가
+    // 동시에 호출됨. isSubmittingReview 플래그로 ①을(비동기 저장이 끝나기
+    // 전엔 재진입 자체를 막음), 아래 keydown 리스너 쪽에서 제거 후 재등록으로
+    // ②를 해결함.
+    let isSubmittingReview = false;
+
     window.submitReview = async function() {
         if (currentDetailId === null || !db) return;
+        if (isSubmittingReview) return; // 앞선 제출이 아직 안 끝났으면 무시(중복 제출 방지)
         const input = document.getElementById('reviewInput');
         const nickInput = document.getElementById('reviewNickname');
         const text = input.value.trim();
         const nickname = nickInput.value.trim() || '익명';
-        
+
         if (!text) return;
         if (text.length > 50) { alert('한줄평은 50자 이내로 작성해 주세요.'); return; }
         if (nickname.length > 10) { alert('닉네임은 10자 이내로 작성해 주세요.'); return; }
@@ -1593,14 +1606,20 @@
             return;
         }
 
-        document.getElementById('reviewCooldownMsg').innerHTML = '<div style="font-size: 0.78em; color: var(--main-blue); margin-top: 4px;">등록 중... ✍️</div>';
-
-        // 이 식당 리뷰 목록에 같은 닉네임이 이미 있으면 "닉네임 2"처럼 번호를 붙임.
-        // 다음 방문을 위해 기억해두는 "내 닉네임"(customNickname)은 번호 붙기 전
-        // 원본(nickname)으로 저장 — 번호는 이 식당 한정 표시용이라 저장할 필요 없음.
-        const finalNickname = dedupeNickname(nickname);
-
+        // ⚠️ isSubmittingReview를 true로 바꾸는 시점부터 finally로 되돌리는
+        // 시점 사이에서 뭐가 됐든 예외 없이 끝까지 지나가야 함 — 그 사이에서
+        // 뭔가 던지면 플래그가 true로 눌러붙어서, 이 스크립트가 다음에 통째로
+        // 재실행되기 전까지 계속 "이미 제출 중"으로 오인해 아무 것도 등록이
+        // 안 되는 새 버그가 생김. dedupeNickname 호출도 반드시 try 안에서.
+        isSubmittingReview = true;
         try {
+            document.getElementById('reviewCooldownMsg').innerHTML = '<div style="font-size: 0.78em; color: var(--main-blue); margin-top: 4px;">등록 중... ✍️</div>';
+
+            // 이 식당 리뷰 목록에 같은 닉네임이 이미 있으면 "닉네임 2"처럼 번호를 붙임.
+            // 다음 방문을 위해 기억해두는 "내 닉네임"(customNickname)은 번호 붙기 전
+            // 원본(nickname)으로 저장 — 번호는 이 식당 한정 표시용이라 저장할 필요 없음.
+            const finalNickname = dedupeNickname(nickname);
+
             await window.fsAddDoc(window.fsCollection(db, `restaurants/${currentDetailId}/reviews`), {
                 text: text,
                 nickname: finalNickname,
@@ -1637,6 +1656,8 @@
         } catch (e) {
             console.error("Firebase addDoc error: ", e);
             document.getElementById('reviewCooldownMsg').innerHTML = `<div class="review-cooldown-msg">오류가 발생했습니다. 다시 시도해 주세요.</div>`;
+        } finally {
+            isSubmittingReview = false;
         }
     }
 
@@ -1791,13 +1812,22 @@
         return div.innerHTML;
     }
 
-    // Enter 키로 한줄평 등록
-    document.addEventListener('keydown', function(e) {
+    // Enter 키로 한줄평 등록. document에 붙는 리스너라 탭을 오갈 때마다(이
+    // 스크립트가 통째로 재실행될 때마다) 계속 새로 addEventListener하면 예전
+    // 리스너가 안 지워지고 쌓임 — 그러면 엔터 한 번에 쌓인 리스너 수만큼
+    // submitReview()가 한꺼번에 불려서 "짧은 시간에 여러 번 등록되는" 버그가
+    // 생김(game-tab.html/calorie-tab.html의 outside-click 리스너와 동일한
+    // 종류의 문제). 기존 리스너를 지우고 새로 등록해 항상 하나만 남게 함.
+    if (window.__reviewEnterKeyHandler) {
+        document.removeEventListener('keydown', window.__reviewEnterKeyHandler);
+    }
+    window.__reviewEnterKeyHandler = function(e) {
         if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'reviewInput') {
             e.preventDefault();
             submitReview();
         }
-    });
+    };
+    document.addEventListener('keydown', window.__reviewEnterKeyHandler);
 
     init();
 })();
