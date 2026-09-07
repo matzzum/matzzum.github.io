@@ -204,6 +204,11 @@ function syncCanvasResolution() {
     const area = document.getElementById('wheelArea');
     if (!area) return;
     const size = area.getBoundingClientRect().width;
+    // 탭 전환 직후 등 wheelArea가 아직 레이아웃되지 않아 폭이 0일 수 있음 —
+    // 이때 canvas.width를 0으로 설정하면 이어지는 drawWheel()의 radius가
+    // 음수가 되어 ctx.arc()가 IndexSizeError로 터짐. 그냥 건너뛰고
+    // drawWheel() 쪽 재시도 로직이 레이아웃이 끝난 뒤 다시 불러주게 둔다.
+    if (size <= 0) return;
     const dpr = window.devicePixelRatio || 1;
     canvas.width = Math.round(size * dpr);
     canvas.height = Math.round(size * dpr);
@@ -242,6 +247,17 @@ function drawWheel(angle) {
     const displaySize = area.getBoundingClientRect().width;
     const cx = displaySize / 2, cy = displaySize / 2;
     const radius = cx - 5;
+    if (radius <= 0) {
+        // wheelArea가 아직 레이아웃되지 않아 radius가 0 이하(예: 탭 전환
+        // 직후 곧바로 autoArrange 호출) — 여기서 그리면 ctx.arc()가
+        // IndexSizeError를 던지므로 건너뛰고, 다음 프레임에 해상도 동기화부터
+        // 다시 시도한다.
+        requestAnimationFrame(() => {
+            syncCanvasResolution();
+            drawWheel(angle);
+        });
+        return;
+    }
     const n = slotCount();
     const slice = (2 * Math.PI) / n;
 
