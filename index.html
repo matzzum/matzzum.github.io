@@ -23,8 +23,16 @@
     <script src="assets/js/MarkerClustering.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <!-- 여러 탭에 중복 정의돼 있던 공용 유틸(getDistanceKm 등) -->
-    <script src="assets/js/shared.js"></script>
-    <link rel="stylesheet" href="css/index.css">
+    <!-- ⚠️ index.html 자신이 쓰는 css/js(assets/js/shared.js, css/index.css,
+         맨 아래 js/index.js)는 탭 프래그먼트처럼 fetch로 받아오는 게 아니라
+         브라우저가 그냥 정적으로 로드하는 태그라, 지금까지처럼 캐시무효화
+         쿼리 없이 두면 GitHub Pages의 캐시(max-age=600, 10분)에 걸려서
+         배포 직후에도 사용자 브라우저엔 예전 버전이 최대 10분간 남아있을
+         수 있었음(실제로 라이브 배포는 됐는데 안 바뀌어 보인다는 제보의
+         원인). document.write로 로드 시점에 즉석에서 캐시무효화 쿼리를
+         붙여 항상 최신 파일을 받아오도록 함. -->
+    <script>document.write('<script src="assets/js/shared.js?v=' + Date.now() + '"><' + '/script>');</script>
+    <script>document.write('<link rel="stylesheet" href="css/index.css?v=' + Date.now() + '">');</script>
 </head>
 <body>
 <div id="mobile-ad-banner">
@@ -146,6 +154,6 @@
     </div>
 </div>
 
-<script src="js/index.js"></script>
+<script>document.write('<script src="js/index.js?v=' + Date.now() + '"><' + '/script>');</script>
 </body>
 </html>
