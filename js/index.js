@@ -28,7 +28,7 @@ function loadTab(tabName) {
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             return res.text();
         })
-        .then(html => {
+        .then(async html => {
             const area = document.getElementById('content-area');
 
             // Live Server 등 dev tools 주입 코드 제거 (끝태그 뒤 잔여물 정리)
@@ -38,15 +38,34 @@ function loadTab(tabName) {
                 html = html.substring(0, lastClose + marker.length);
             }
 
-            // 각 탭이 계층 분리로 참조하는 css/js/*.css,*.js 파일에도 위와 같은
-            // 캐시무효화 쿼리를 붙여줌 — 안 붙이면 이 파일들만 브라우저 캐시에
-            // 걸려서, 나중에 css/js 내용을 고쳐도 재배포 후 사용자가 새로고침
-            //해도 예전 버전이 계속 보일 수 있음(예전엔 전부 인라인이라 탭
-            // html 자체의 cacheBust만으로 항상 최신이 보장됐었음).
-            html = html.replace(/((?:href|src)=")((?:css|js)\/[^"?]+)(")/g, `$1$2?v=${cacheBust}$3`);
+            // js/*.js는 계층 분리로 참조하는 파일이라 위와 같은 캐시무효화
+            // 쿼리를 붙여줌 — 안 붙이면 이 파일들만 브라우저 캐시에 걸려서,
+            // 나중에 js 내용을 고쳐도 재배포 후 사용자가 새로고침해도 예전
+            // 버전이 계속 보일 수 있음(예전엔 전부 인라인이라 탭 html 자체의
+            // cacheBust만으로 항상 최신이 보장됐었음).
+            html = html.replace(/(src=")(js\/[^"?]+)(")/g, `$1$2?v=${cacheBust}$3`);
+
+            // ⚠️ css는 <link>로 그대로 두면 안 됨 — <link>는 네트워크로 따로
+            // 불러오는 동안 스타일이 하나도 안 걸린 마크업이 먼저 그려짐(요소
+            // 크기를 지정하는 CSS가 아직 안 걸려서, 예를 들어 탭 중제목 옆
+            // 아이콘이 <svg> 원본 크기 그대로 잠깐 커 보였다가 CSS가 로드되면
+            // 순간적으로 작아지는 깜빡임으로 나타남). 예전엔 스타일이 전부
+            // 인라인이라 이 문제 자체가 없었음. css 파일은 순전히 편집 편의를
+            // 위해 분리해둔 것뿐이라, 실제 로딩 시엔 내용을 미리 받아와
+            // <style>로 바꿔 끼워서 예전과 똑같이 동기적으로 바로 적용되게 함.
+            const cssLinkMatch = html.match(/<link rel="stylesheet" href="(css\/[^"?]+)">/);
+            if (cssLinkMatch) {
+                try {
+                    const cssRes = await fetch(`./${cssLinkMatch[1]}?v=${cacheBust}`);
+                    const cssText = cssRes.ok ? await cssRes.text() : '';
+                    html = html.replace(cssLinkMatch[0], `<style>${cssText}</style>`);
+                } catch (e) {
+                    console.error('탭 CSS 로드 실패:', e);
+                }
+            }
 
             area.innerHTML = html;
-            
+
             // 스크립트 강제 실행 로직 (안전한 생성 방식)
             const scripts = area.querySelectorAll('script');
             scripts.forEach(oldScript => {
