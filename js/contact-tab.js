@@ -243,8 +243,9 @@ window.showNoticeDetail = function(id) {
 
 // ===== 문의하기 =====
 let selectedCategory = null;
-let currentInqTab = 'write';
+let currentInqTab = 'list'; // 15번 기획: 다른 사람 글부터 훑어보는 흐름이 기본이 되도록 "전체 보기"를 기본 탭으로
 let allInquiries = [];
+let inqNicknameIsRandomPlaceholder = false; // 지금 입력칸 값이 (아직 안 건드린) 랜덤값인지
 let currentFilter = 'all';
 let unsubscribeInquiries = null;
 let db = null;
@@ -287,6 +288,23 @@ async function initFirebase() {
 }
 
 initFirebase();
+
+// ----- 닉네임 — 14번 한줄평 랜덤 닉네임 시스템 재사용(15번 기획, assets/js/shared.js) -----
+// 게시판 특성상 "익명/익명/익명"만 뜨면 어떤 글이 누구 건지 구분이 안 돼서,
+// 문의하기도 한줄평과 동일한 형용사+명사 랜덤 닉네임으로 기본값을 채움.
+function prefillInquiryNickname() {
+    const nickInput = document.getElementById('inq-nickname');
+    if (!nickInput) return;
+    const saved = localStorage.getItem(CUSTOM_NICK_KEY);
+    if (saved) {
+        nickInput.value = saved;
+        inqNicknameIsRandomPlaceholder = false;
+    } else {
+        nickInput.value = getSessionRandomNickname();
+        inqNicknameIsRandomPlaceholder = true;
+    }
+}
+prefillInquiryNickname();
 
 // 카테고리 선택
 window.selectCategory = function(btn) {
@@ -376,6 +394,14 @@ function renderInquiryList() {
         }
         const nickname = escapeHtml(item.nickname || '익명');
         const content = escapeHtml(item.content || '');
+        // 답글은 앱 안에 작성 UI가 없음 — tools/reply-inquiry.js(관리자 전용
+        // Admin SDK 스크립트)로만 달 수 있고, 여기선 읽기 전용으로만 표시(15번 기획)
+        const replyHtml = item.reply ? `
+                <div class="inquiry-reply">
+                    <span class="inquiry-reply-badge">🧑‍💻 답변</span>
+                    <div class="inquiry-reply-text">${escapeHtml(item.reply)}</div>
+                </div>
+        ` : '';
         return `
             <div class="inquiry-card">
                 <div class="inquiry-card-top">
@@ -384,6 +410,7 @@ function renderInquiryList() {
                     <span class="inquiry-date">${dateStr}</span>
                 </div>
                 <div class="inquiry-content">${content}</div>
+                ${replyHtml}
             </div>
         `;
     }).join('');
@@ -418,10 +445,14 @@ window.submitInquiry = async function() {
     msg.className = 'cooldown-msg';
 
     try {
+        // 지금 불러와져 있는 최근 문의 목록(allInquiries) 안에서만 겹침 체크 —
+        // 한줄평과 동일한 원칙(15번 기획), 추가 Firestore 조회 없음
+        const finalNickname = dedupeNickname(nickname, allInquiries.map(i => i.nickname || '익명'));
+
         const { collection, addDoc, serverTimestamp } = window._inqFs;
         await addDoc(collection(db, 'inquiries'), {
             category: selectedCategory,
-            nickname,
+            nickname: finalNickname,
             content,
             createdAt: serverTimestamp()
         });
@@ -431,6 +462,15 @@ window.submitInquiry = async function() {
         updateCharCount();
         selectedCategory = null;
         document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+
+        // 랜덤으로 채워졌던 닉네임을 직접 고쳐서 제출했다면, 그걸 "내 닉네임"으로
+        // 기억해뒀다가 다음 방문부턴 랜덤 대신 계속 이 닉네임을 씀(한줄평과 동일 패턴)
+        if (inqNicknameIsRandomPlaceholder && nickname !== getSessionRandomNickname()) {
+            localStorage.setItem(CUSTOM_NICK_KEY, nickname);
+            inqNicknameIsRandomPlaceholder = false;
+        } else if (!inqNicknameIsRandomPlaceholder && nickname !== localStorage.getItem(CUSTOM_NICK_KEY)) {
+            localStorage.setItem(CUSTOM_NICK_KEY, nickname);
+        }
 
         msg.textContent = '✅ 문의가 등록되었습니다!';
         msg.className = 'cooldown-msg success-msg';

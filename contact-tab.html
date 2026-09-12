@@ -467,14 +467,33 @@
             </div>
         </div>
         <div class="sub-content">
-            <!-- 탭 전환 -->
+            <!-- 탭 전환 — 15번 기획: 다른 사람 글부터 훑어보는 흐름이 되도록
+                 "전체 보기"를 왼쪽·기본 활성으로, "글 남기기"를 오른쪽으로 배치 -->
             <div class="inquiry-tabs">
-                <button class="inquiry-tab-btn active" id="tab-write" onclick="switchInquiryTab('write')">✏️ 글 남기기</button>
-                <button class="inquiry-tab-btn" id="tab-list" onclick="switchInquiryTab('list')">📋 전체 보기</button>
+                <button class="inquiry-tab-btn active" id="tab-list" onclick="switchInquiryTab('list')">📋 전체 보기</button>
+                <button class="inquiry-tab-btn" id="tab-write" onclick="switchInquiryTab('write')">✏️ 글 남기기</button>
+            </div>
+
+            <!-- 목록 보기 -->
+            <div id="inquiry-list-panel">
+                <div class="category-filter">
+                    <button class="filter-chip active" data-filter="all" onclick="filterInquiries(this)">전체</button>
+                    <button class="filter-chip" data-filter="bug" onclick="filterInquiries(this)">🐛 버그 제보</button>
+                    <button class="filter-chip" data-filter="restaurant" onclick="filterInquiries(this)">🍜 음식점 정보</button>
+                    <button class="filter-chip" data-filter="region" onclick="filterInquiries(this)">📍 지역 추가 요청</button>
+                    <button class="filter-chip" data-filter="feature" onclick="filterInquiries(this)">✨ 기능 요청</button>
+                </div>
+                <div class="inquiry-list-header">
+                    <div class="list-title">문의 목록</div>
+                    <div class="list-count" id="inq-list-count"></div>
+                </div>
+                <div id="inq-list-container">
+                    <div class="inquiry-loading">불러오는 중... ⏳</div>
+                </div>
             </div>
 
             <!-- 작성 폼 -->
-            <div id="inquiry-write-panel">
+            <div id="inquiry-write-panel" style="display:none;">
                 <div class="inquiry-form-card">
                     <div class="form-label">카테고리 선택 *</div>
                     <div class="category-grid">
@@ -505,24 +524,6 @@
 
                     <button class="submit-btn" onclick="submitInquiry()" id="inq-submit-btn">등록하기</button>
                     <div class="cooldown-msg" id="inq-msg"></div>
-                </div>
-            </div>
-
-            <!-- 목록 보기 -->
-            <div id="inquiry-list-panel" style="display:none;">
-                <div class="category-filter">
-                    <button class="filter-chip active" data-filter="all" onclick="filterInquiries(this)">전체</button>
-                    <button class="filter-chip" data-filter="bug" onclick="filterInquiries(this)">🐛 버그 제보</button>
-                    <button class="filter-chip" data-filter="restaurant" onclick="filterInquiries(this)">🍜 음식점 정보</button>
-                    <button class="filter-chip" data-filter="region" onclick="filterInquiries(this)">📍 지역 추가 요청</button>
-                    <button class="filter-chip" data-filter="feature" onclick="filterInquiries(this)">✨ 기능 요청</button>
-                </div>
-                <div class="inquiry-list-header">
-                    <div class="list-title">문의 목록</div>
-                    <div class="list-count" id="inq-list-count"></div>
-                </div>
-                <div id="inq-list-container">
-                    <div class="inquiry-loading">불러오는 중... ⏳</div>
                 </div>
             </div>
         </div>

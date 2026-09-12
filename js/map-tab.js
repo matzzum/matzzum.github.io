@@ -956,45 +956,11 @@ const COOLDOWN_MS = 60000; // 1분 쿨타임
 let currentDetailId = null;
 
 // ----- 랜덤 닉네임 (형용사 + 명사) -----
-// 닉네임 입력 부담을 줄이기 위한 기본값. 페이지를 새로고침할 때마다 다른
-// 조합이 나오지만, 같은 세션 안에서 여러 식당에 리뷰를 남길 땐 같은
-// 닉네임을 유지함(새로고침 전까진 안 바뀜). 직접 자기만의 닉네임으로
-// 고쳐서 한 번 제출하면 그 값을 기억해뒀다가 다음 방문부터 계속 씀.
-const NICK_ADJECTIVES = [
-    '행복한','즐거운','신나는','든든한','다정한','명랑한','상큼한','활기찬','씩씩한','느긋한','설레는','유쾌한',
-    '편안한','포근한','차분한','상냥한','재빠른','촉촉한','매콤한','여유로운'
-];
-const NICK_NOUNS = [
-    '너구리','오리','다람쥐','고양이','강아지','토끼','펭귄','수달','여우','사자','하마','판다', // 동물
-    '부엉이','코알라','알파카','라쿤','고슴도치', // 동물 추가
-    '감자','만두','붕어빵','호떡','딸기','라떼','도토리','젤리','쿠키','마카롱', // 음식·사물
-    '구름','바람','별빛','햇살','조약돌','눈송이','무지개','반딧불' // 자연
-];
-// 형용사 20개 × 명사 35개 = 700가지 조합
-const CUSTOM_NICK_KEY = 'woody_custom_nickname';
-let sessionRandomNickname = null; // 새로고침 전까지 세션 내에서 고정
+// NICK_ADJECTIVES·NICK_NOUNS·CUSTOM_NICK_KEY·getSessionRandomNickname()·
+// dedupeNickname()는 assets/js/shared.js로 옮겨서 문의하기(contact-tab.js)와
+// 공용으로 씀(15번 기획) — 여기 남은 건 이 탭에서만 쓰는 상태뿐.
 let nicknameIsRandomPlaceholder = false; // 지금 입력칸 값이 (아직 안 건드린) 랜덤값인지
 let currentReviewNicknames = []; // 지금 열려있는 식당의 기존 리뷰 닉네임 목록 (겹침 체크용)
-
-function getSessionRandomNickname() {
-    if (!sessionRandomNickname) {
-        const adj = NICK_ADJECTIVES[Math.floor(Math.random() * NICK_ADJECTIVES.length)];
-        const noun = NICK_NOUNS[Math.floor(Math.random() * NICK_NOUNS.length)];
-        sessionRandomNickname = `${adj} ${noun}`;
-    }
-    return sessionRandomNickname;
-}
-
-// 지금 열려있는 식당의 리뷰 목록(currentReviewNicknames) 안에서만 겹침을 검사.
-// 앱 전체를 대상으로 하려면 제출할 때마다 Firestore 조회가 추가로 필요해서
-// 비용이 드는데, 실제로 헷갈리는 상황은 "한 식당 리뷰 목록에 같은 닉네임
-// 두 개"인 경우가 대부분이라 이미 불러와져 있는 이 목록만으로 충분함.
-function dedupeNickname(nickname) {
-    if (!currentReviewNicknames.includes(nickname)) return nickname;
-    let n = 2;
-    while (currentReviewNicknames.includes(`${nickname} ${n}`)) n++;
-    return `${nickname} ${n}`;
-}
 
 // 식당 상세가 열릴 때마다 호출 — 저장된 내 닉네임이 있으면 그걸, 없으면
 // 이번 세션의 랜덤 닉네임을 입력칸에 채워둠
@@ -1145,7 +1111,7 @@ window.submitReview = async function() {
         // 이 식당 리뷰 목록에 같은 닉네임이 이미 있으면 "닉네임 2"처럼 번호를 붙임.
         // 다음 방문을 위해 기억해두는 "내 닉네임"(customNickname)은 번호 붙기 전
         // 원본(nickname)으로 저장 — 번호는 이 식당 한정 표시용이라 저장할 필요 없음.
-        const finalNickname = dedupeNickname(nickname);
+        const finalNickname = dedupeNickname(nickname, currentReviewNicknames);
 
         await window.fsAddDoc(window.fsCollection(db, `restaurants/${currentDetailId}/reviews`), {
             text: text,
