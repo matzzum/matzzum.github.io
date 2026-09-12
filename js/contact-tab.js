@@ -412,7 +412,7 @@ function renderInquiryList() {
         // Admin SDK 스크립트)로만 달 수 있고, 여기선 읽기 전용으로만 표시(15번 기획)
         const replyHtml = item.reply ? `
                 <div class="inquiry-reply">
-                    <span class="inquiry-reply-badge">🧑‍💻 답변</span>
+                    <span class="inquiry-reply-badge">🧑‍💻 맛쩜 운영자</span>
                     <div class="inquiry-reply-text">${escapeHtml(item.reply)}</div>
                 </div>
         ` : '';
