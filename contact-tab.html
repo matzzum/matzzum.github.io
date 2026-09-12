@@ -62,6 +62,11 @@
                     <div class="settings-row-text">개인정보처리방침</div>
                     <div class="settings-row-chevron">›</div>
                 </div>
+                <div class="settings-row" onclick="showScreen('sources')">
+                    <div class="settings-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5C4 4.7 4.7 4 5.5 4h9l5 5v10.5c0 0.8-0.7 1.5-1.5 1.5h-13C4.7 21 4 20.3 4 19.5V5.5Z"/><path d="M13.5 4v4.5a1 1 0 0 0 1 1H19"/><line x1="8" y1="13" x2="15" y2="13"/><line x1="8" y1="16.5" x2="12.5" y2="16.5"/></svg></div>
+                    <div class="settings-row-text">정보 출처</div>
+                    <div class="settings-row-chevron">›</div>
+                </div>
             </div>
         </div>
     </div>
@@ -187,16 +192,6 @@
 
                 <div class="notice-item" style="cursor:default;">
                     <div class="notice-meta">
-                        <span class="notice-badge">📊 데이터 출처</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        식당 기본 정보(이름·위치·가격·영업시간)는 공공데이터포털(data.go.kr)의 상가(상권)정보를 기반으로 합니다.<br>
-                        한줄평과 인기 랭킹은 실제 맛쩜 이용자들이 직접 남긴 정보예요.
-                    </div>
-                </div>
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
                         <span class="notice-badge">🏷️ 맛쩜이라는 이름</span>
                     </div>
                     <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
@@ -299,6 +294,51 @@
                     </div>
                     <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
                         개인정보 관련 문의는 [설정 → 문의하기]를 이용해 주세요.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 정보 출처 화면 ===== -->
+    <div id="screen-sources" class="sub-screen">
+        <div class="settings-header">
+            <div class="settings-header-inner">
+                <button class="back-btn" onclick="showScreen('main')">
+                    ‹ 설정
+                </button>
+                <div class="settings-title">정보 출처</div>
+                <div class="header-spacer"></div>
+            </div>
+        </div>
+        <div class="sub-content">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+
+                <div class="notice-item" style="cursor:default;">
+                    <div class="notice-meta">
+                        <span class="notice-badge">🏪 식당 기본 정보</span>
+                    </div>
+                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
+                        공공데이터포털(data.go.kr)의 상가(상권)정보를 기반으로 합니다.
+                    </div>
+                </div>
+
+                <div class="notice-item" style="cursor:default;">
+                    <div class="notice-meta">
+                        <span class="notice-badge">🗺️ 지도 표시</span>
+                    </div>
+                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
+                        네이버 지도 API(NAVER Cloud Platform)를 사용합니다.
+                    </div>
+                </div>
+
+                <div class="notice-item" style="cursor:default;">
+                    <div class="notice-meta">
+                        <span class="notice-badge">💬 한줄평·인기 랭킹</span>
+                    </div>
+                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
+                        실제 맛쩜 이용자들이 직접 남긴 정보예요.
                     </div>
                 </div>
 

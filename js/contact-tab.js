@@ -93,7 +93,7 @@ const NOTICES = [
     }
 ];
 
-const SCREENS = ['main', 'notice', 'notice-detail', 'inquiry', 'howto', 'system', 'favorite-places', 'locsearch', 'about', 'privacy'];
+const SCREENS = ['main', 'notice', 'notice-detail', 'inquiry', 'howto', 'system', 'favorite-places', 'locsearch', 'about', 'privacy', 'sources'];
 
 window.showScreen = function(name) {
     SCREENS.forEach(s => {
