@@ -212,6 +212,7 @@
         border-left-color: #4B93FF;
     }
     .tab-icon { width: 24px; height: 24px; margin-bottom: 6px; transition: transform 0.2s ease; }
+    .tab-item[data-tab="contact"] .tab-icon { width: 31px; height: 31px; }
     .tab-text { font-size: 11px; font-weight: 700; font-family: 'Pretendard', 'Noto Sans KR', sans-serif; letter-spacing: -0.2px; }
     .tab-item:hover:not(.active) { color: var(--text-primary); background: var(--bg-app); }
     .tab-item.active .tab-icon { transform: scale(1.05); }
@@ -406,6 +407,7 @@
         }
         body.dark-theme .tab-item.active { background: transparent; }
         .tab-icon { width: 22px; height: 22px; margin-bottom: 3px; }
+        .tab-item[data-tab="contact"] .tab-icon { width: 29px; height: 29px; }
         .tab-item.active .tab-icon { transform: none; }
         .tab-text { font-size: 10px; }
 
