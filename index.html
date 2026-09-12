@@ -1,22 +1,165 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>맛쩜 — 새 주소로 이동</title>
-<meta http-equiv="refresh" content="0; url=https://matzzum.github.io/">
-<link rel="canonical" href="https://matzzum.github.io/">
-<script>location.replace('https://matzzum.github.io/' + location.hash);</script>
-<style>
-  body{
-    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background:#F2F4F6; color:#191F28;
-    font-family:'Pretendard','Noto Sans KR',-apple-system,sans-serif; text-align:center;
-  }
-  a{ color:#3182F6; font-weight:700; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>맛쩜</title>
+    <!-- 구글 애드센스 사이트 소유권 확인용 코드 -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1429945929826005"
+     crossorigin="anonymous"></script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%233182F6'/%3E%3Cpath d='M32 10 C20 10 11 19 11 30 C11 44 32 56 32 56 C32 56 53 44 53 30 C53 19 44 10 32 10 Z' fill='%23fff'/%3E%3Cellipse cx='26' cy='22' rx='5.5' ry='7' fill='%233182F6'/%3E%3Crect x='24' y='28' width='4' height='16' rx='2' fill='%233182F6'/%3E%3Crect x='37' y='16' width='2.3' height='28' rx='1.15' fill='%233182F6'/%3E%3Crect x='40.3' y='16' width='2.3' height='28' rx='1.15' fill='%233182F6'/%3E%3C/svg%3E">
+    <!-- 모바일 "홈 화면에 추가" 아이콘 — SVG 파비콘만 있으면 iOS/Android 둘 다
+         홈 화면 아이콘으로 못 쓰고 제목 첫 글자("맛")로 된 임시 아이콘을
+         대신 만들어 보여줌. 실제 PNG 아이콘 + 매니페스트를 추가해야 함. -->
+    <link rel="apple-touch-icon" href="Image/icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="맛쩜">
+    <meta name="theme-color" content="#3182F6">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@700;800;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 네이버 지도 API v3: NCP 콘솔에서 발급받은 Client ID를 아래 ncpKeyId에 넣어주세요. -->
+    <!-- 발급 방법은 README.md의 "네이버 지도 API 키 설정" 항목 참고 -->
+    <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3z36hqrgla&submodules=geocoder"></script>
+    <!-- 네이버 공식 마커 클러스터링 라이브러리 (Apache 2.0, NAVER Corp) — 자체 호스팅 -->
+    <!-- 출처: https://github.com/navermaps/marker-tools.js/tree/master/marker-clustering -->
+    <script src="assets/js/MarkerClustering.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- 여러 탭에 중복 정의돼 있던 공용 유틸(getDistanceKm 등) -->
+    <!-- ⚠️ index.html 자신이 쓰는 css/js(assets/js/shared.js, css/index.css,
+         맨 아래 js/index.js)는 탭 프래그먼트처럼 fetch로 받아오는 게 아니라
+         브라우저가 그냥 정적으로 로드하는 태그라, 지금까지처럼 캐시무효화
+         쿼리 없이 두면 GitHub Pages의 캐시(max-age=600, 10분)에 걸려서
+         배포 직후에도 사용자 브라우저엔 예전 버전이 최대 10분간 남아있을
+         수 있었음(실제로 라이브 배포는 됐는데 안 바뀌어 보인다는 제보의
+         원인). document.write로 로드 시점에 즉석에서 캐시무효화 쿼리를
+         붙여 항상 최신 파일을 받아오도록 함. -->
+    <script>document.write('<script src="assets/js/shared.js?v=' + Date.now() + '"><' + '/script>');</script>
+    <script>document.write('<link rel="stylesheet" href="css/index.css?v=' + Date.now() + '">');</script>
 </head>
 <body>
-  <p>맛쩜은 새 주소로 이사했어요.<br>자동으로 이동하지 않으면 <a href="https://matzzum.github.io/">여기를 눌러주세요</a>.</p>
+<!-- 광고 자리 (숨김 처리) — 기존에 넷마블 게임 광고 이미지(저작권자 동의 없는 실제
+     광고 소재)가 테스트용으로 들어가 있어서 전부 삭제함. 애드센스 등 정식 광고
+     허가가 나오면 이 자리에 광고 코드를 붙이고 hidden을 제거하면 됨. -->
+<div id="mobile-ad-banner" hidden>
+    <img class="ad-blur-bg">
+    <img class="ad-main-img">
+</div>
+
+<div id="app">
+    <nav id="tab-nav">
+        <!-- 상단 로고 (PC 전용, 다크모드 토글) -->
+        <div class="nav-logo" onclick="toggleThemeManually()" title="다크모드/라이트모드 전환">
+            <svg viewBox="0 0 64 64" role="img" aria-label="맛쩜">
+                <rect width="64" height="64" rx="14" fill="#3182F6"/>
+                <path d="M32 10 C20 10 11 19 11 30 C11 44 32 56 32 56 C32 56 53 44 53 30 C53 19 44 10 32 10 Z" fill="#fff"/>
+                <ellipse cx="26" cy="22" rx="5.5" ry="7" fill="#3182F6"/>
+                <rect x="24" y="28" width="4" height="16" rx="2" fill="#3182F6"/>
+                <rect x="37" y="16" width="2.3" height="28" rx="1.15" fill="#3182F6"/>
+                <rect x="40.3" y="16" width="2.3" height="28" rx="1.15" fill="#3182F6"/>
+            </svg>
+        </div>
+        <!-- 지도 홈 -->
+        <div class="tab-item active" data-tab="map">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+            <div class="tab-text">지도홈</div>
+        </div>
+        <!-- 즐겨찾기 -->
+        <div class="tab-item" data-tab="favorite">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <div class="tab-text">즐겨찾기</div>
+        </div>
+        <!-- 랭킹/피드 (구 AI 렌즈 슬롯) -->
+        <div class="tab-item" data-tab="calorie">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4z"/>
+                <path d="M7 6H4a2 2 0 0 0 0 4h1M17 6h3a2 2 0 0 1 0 4h-1"/>
+            </svg>
+            <div class="tab-text">랭킹</div>
+        </div>
+        <!-- 룰렛 -->
+        <div class="tab-item" data-tab="game">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                <circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"/>
+                <circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/>
+                <circle cx="15.5" cy="15.5" r="1.5" fill="currentColor"/>
+            </svg>
+            <div class="tab-text">룰렛</div>
+        </div>
+        <!-- 설정 -->
+        <div class="tab-item" data-tab="contact">
+            <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <div class="tab-text">설정</div>
+        </div>
+    </nav>
+    <!-- PC 영구 고정 식당 목록 패널 -->
+    <div id="persistent-left-panel">
+        <div class="main-title-box">
+            <h1 class="app-logo"><span>맛<span class="jjeom">쩜</span></span></h1>
+            <!-- 스페어(선 있는 버전) — 나중에 다시 쓸 수도 있어 주석으로 보관
+            <div class="app-subtitle-row">
+                <span class="app-subtitle-rule"></span>
+                <span class="app-subtitle-text">구내식당 · 한식뷔페 지도</span>
+                <span class="app-subtitle-rule"></span>
+            </div>
+            -->
+            <div class="app-subtitle-text app-subtitle-plain">구내식당 · 한식뷔페 지도</div>
+        </div>
+        <div id="plp-list-header">
+            <input type="text" id="plpSearchInput" placeholder="식당 검색..." oninput="plpFilterData()">
+            <div class="filter-row">
+                <select id="plpRegionFilter" class="filter-item" onchange="plpFilterData()">
+                    <option value="all">지역 전체</option>
+                </select>
+                <div id="plpSortToggle" class="filter-item" onclick="plpToggleSort()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3.3 0-6 2.7-6 6 0 4.5 6 12 6 12s6-7.5 6-12c0-3.3-2.7-6-6-6Z"/><circle cx="12" cy="9" r="2.2"/></svg>거리순</div>
+                <div id="plpDinnerToggle" class="filter-item" onclick="plpToggleDinner()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>석식</div>
+                <div id="plp-locate-btn" class="filter-item home-inline-btn" onclick="plpMoveToGPS()" title="현재 위치">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="3" fill="var(--primary)" stroke="none"/><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/></svg>
+                </div>
+                <div id="plp-home-btn" class="filter-item home-inline-btn" onclick="plpGoHome()"><svg viewBox="0 0 24 24"><path d="M12 3 L20 11 L4 11 Z" fill="#fff"/><rect x="5" y="10.5" width="14" height="10.5" fill="#fff"/><rect x="15" y="2.2" width="2.2" height="5.3" rx="0.3" fill="#fff"/><rect x="7.6" y="13" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="13.6" y="13" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="7.6" y="17" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="13.6" y="17" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/></svg></div>
+            </div>
+        </div>
+        <div id="plp-list-scroll"><div id="plpRestaurantCards"><div style="padding:20px; text-align:center; color:#94a3b8; font-size:0.85em;">불러오는 중...</div></div></div>
+    </div>
+
+    <div id="right-column">
+        <main id="content-area"></main>
+        <!-- PC 전용 하단 광고 배너 (숨김 처리 — mobile-ad-banner와 동일 사유) -->
+        <div id="pc-ad-banner" hidden>
+            <img class="ad-blur-bg">
+            <img class="ad-main-img">
+        </div>
+    </div>
+</div>
+
+<!-- 폈팅 식당 상세 팝업 (지도 탭 이외 전용) -->
+<div id="plp-detail-overlay" onclick="plpClosePopup()"></div>
+<div id="plp-detail-popup">
+    <div class="plp-popup-header">
+        <div class="plp-popup-title" id="plp-popup-name"></div>
+        <div class="plp-popup-close" onclick="plpClosePopup()">✕</div>
+    </div>
+    <div class="plp-popup-body">
+        <div class="plp-popup-desc" id="plp-popup-desc"></div>
+        <div class="plp-popup-info">
+            <p><strong>🕒 영업 시간</strong><br><span id="plp-popup-hours" style="display:inline-block; margin-top:4px;"></span></p>
+            <p style="margin-top:8px;"><strong>💰 가격:</strong> <span id="plp-popup-price"></span></p>
+        </div>
+        <div class="plp-popup-sns" id="plp-popup-sns"></div>
+        <button class="plp-popup-map-btn" onclick="plpGoToMap()">🗺️ 지도에서 보기</button>
+    </div>
+</div>
+
+<script>document.write('<script src="js/index.js?v=' + Date.now() + '"><' + '/script>');</script>
 </body>
 </html>
