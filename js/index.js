@@ -511,7 +511,12 @@ window.toggleFavorite = function(e, id) {
 };
 
 // ✅ 광고 롤링 시스템 (10초마다 슬라이드 전환)
+// Image/Ads/의 광고 이미지가 실제 광고주 동의 없는 소재로 확인돼 전부 삭제하고
+// 배너 자체를 hidden 처리함(index.html 참고). 정식 광고가 붙기 전까진 롤링할
+// 이미지가 없으니 통째로 스킵 — hidden 제거하고 이미지도 다시 채우면 자동 재개.
 (function() {
+    if (document.getElementById('mobile-ad-banner')?.hidden) return;
+
     // Image/Ads/ 폴더에 실제로 들어있는 이미지 개수. 예전엔 다음 번호 이미지가
     // 있는지 매번 요청해보고 없으면(404) 처음으로 되돌아가는 방식이라, 마지막
     // 장 다음엔 항상 한 번씩 실패하는 요청이 나가고 콘솔에 에러가 쌓였음.

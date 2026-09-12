@@ -303,6 +303,9 @@
         position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
         z-index: 100; flex-shrink: 0;
     }
+    /* 광고 소재 없어서 hidden 처리한 동안엔 완전히 빼서 #content-area(flex:1)가
+       그 자리를 자연스럽게 채우도록 함 — 나중에 hidden만 지우면 원상복구됨 */
+    #pc-ad-banner[hidden] { display: none; }
     .ad-blur-bg {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         object-fit: cover; filter: blur(12px) brightness(0.4); transform: scale(1.1);
@@ -341,6 +344,11 @@
     @media (max-width: 768px) {
         /* 모바일은 화면이 좁아 배너가 세로 공간을 많이 차지하므로 PC(120px)보다 낮게 */
         :root { --ad-banner-h: 84px; }
+        /* 광고 소재 없어서 hidden 처리한 동안엔 #content-area가 기다리던 여백(margin-top/
+           height 계산에 쓰는 --ad-banner-h)을 0으로 접어서 빈 공간이 안 남게 함.
+           mobile-ad-banner 자체는 position:fixed라 display:none만으론 부족해서 같이 처리 */
+        body:has(#mobile-ad-banner[hidden]) { --ad-banner-h: 0px; }
+        #mobile-ad-banner[hidden] { display: none; }
         #app { flex-direction: column; } /* 모바일: 세로 배치 */
 
         #right-column {

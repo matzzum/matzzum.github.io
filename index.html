@@ -35,9 +35,12 @@
     <script>document.write('<link rel="stylesheet" href="css/index.css?v=' + Date.now() + '">');</script>
 </head>
 <body>
-<div id="mobile-ad-banner">
-    <img src="Image/Ads/ad01.jpg" class="ad-blur-bg">
-    <img src="Image/Ads/ad01.jpg" class="ad-main-img">
+<!-- 광고 자리 (숨김 처리) — 기존에 넷마블 게임 광고 이미지(저작권자 동의 없는 실제
+     광고 소재)가 테스트용으로 들어가 있어서 전부 삭제함. 애드센스 등 정식 광고
+     허가가 나오면 이 자리에 광고 코드를 붙이고 hidden을 제거하면 됨. -->
+<div id="mobile-ad-banner" hidden>
+    <img class="ad-blur-bg">
+    <img class="ad-main-img">
 </div>
 
 <div id="app">
@@ -128,10 +131,10 @@
 
     <div id="right-column">
         <main id="content-area"></main>
-        <!-- PC 전용 하단 광고 배너 -->
-        <div id="pc-ad-banner">
-            <img src="Image/Ads/ad01.jpg" class="ad-blur-bg">
-            <img src="Image/Ads/ad01.jpg" class="ad-main-img">
+        <!-- PC 전용 하단 광고 배너 (숨김 처리 — mobile-ad-banner와 동일 사유) -->
+        <div id="pc-ad-banner" hidden>
+            <img class="ad-blur-bg">
+            <img class="ad-main-img">
         </div>
     </div>
 </div>
