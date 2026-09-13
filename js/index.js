@@ -297,6 +297,11 @@ window.getRestaurantsData = function() {
         }).join('') + (filtered.length > PLP_LIST_RENDER_LIMIT
             ? `<div style="padding:14px; text-align:center; font-size:0.8em; color:var(--text-secondary);">그 외 ${(filtered.length - PLP_LIST_RENDER_LIMIT).toLocaleString()}곳 더 있어요 — 검색이나 지역 필터로 좁혀보세요</div>`
             : '');
+
+        // PC 왼쪽 패널은 탭이 바뀌어도(즐겨찾기·랭킹·피드·룰렛·설정) 항상
+        // 떠 있는 상시 패널이라, 광고는 "지도" 탭일 때만 노출(마케팅 쪽 지시:
+        // 지도 탭 외 화면엔 광고 코드 자체를 넣지 않음)
+        updateListAdSlot('plp-ad-slot', currentTab === 'map' && listItems.length > 0);
     };
 
     const PLP_ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3.3 0-6 2.7-6 6 0 4.5 6 12 6 12s6-7.5 6-12c0-3.3-2.7-6-6-6Z"/><circle cx="12" cy="9" r="2.2"/></svg>';

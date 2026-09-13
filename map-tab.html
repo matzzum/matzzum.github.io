@@ -22,7 +22,21 @@
                 <div id="home-btn" class="filter-item home-inline-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><path d="M12 3 L20 11 L4 11 Z" fill="#fff"/><rect x="5" y="10.5" width="14" height="10.5" fill="#fff"/><rect x="15" y="2.2" width="2.2" height="5.3" rx="0.3" fill="#fff"/><rect x="7.6" y="13" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="13.6" y="13" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="7.6" y="17" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/><rect x="13.6" y="17" width="2.8" height="2.8" rx="0.4" fill="var(--primary)"/></svg></div>
             </div>
         </div>
-        <div id="list-scroll"><div id="restaurantCards"></div></div>
+        <div id="list-scroll">
+            <div id="restaurantCards"></div>
+            <!-- 애드센스 반려("게시자 콘텐츠 없는 화면에 광고") 대응: 지도 탭
+                 식당 리스트 맨 아래에만 광고 1개, 리스트에 항목이 있을 때만
+                 노출(js/map-tab.js의 filterData → updateListAdSlot). -->
+            <div id="map-ad-slot" class="map-list-ad-slot" hidden>
+                <div class="map-list-ad-label">광고</div>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-6785285513040153"
+                     data-ad-slot="0000000000"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
     </div>
 
     <div id="detail-panel">

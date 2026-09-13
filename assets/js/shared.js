@@ -60,3 +60,39 @@ window.NICK_NOUNS = NICK_NOUNS;
 window.CUSTOM_NICK_KEY = CUSTOM_NICK_KEY;
 window.getSessionRandomNickname = getSessionRandomNickname;
 window.dedupeNickname = dedupeNickname;
+
+// ----- 지도 탭 식당 리스트 하단 광고 슬롯 표시/숨김 (PC 패널 index.js · 모바일
+// 리스트 map-tab.js 공용) -----
+// 애드센스 반려 사유("게시자 콘텐츠 없는 화면에 광고") 대응: 리스트에 실제
+// 항목이 하나라도 렌더링된 뒤에만 광고 슬롯을 보여주고, 로딩 중이거나 검색
+// 결과가 0건일 땐 숨김. 슬롯 자체(<ins class="adsbygoogle">)는 리스트를
+// 다시 그릴 때마다 재생성하지 않고 hidden 속성만 토글 — 필터를 바꿀 때마다
+// 광고가 다시 요청되면 애드센스 무효 트래픽/새로고침 정책에 걸릴 수 있음.
+//
+// push()는 이 함수 안에서 딱 한 번만, 그것도 슬롯이 "hidden → 보임"으로
+// 실제 전환되는 그 순간에만 호출함(el.dataset.adPushed로 중복 방지).
+// 처음부터(hidden 상태에서) 미리 push()해두면 애드센스가 폭 0으로 읽어서
+// "No slot size for availableWidth=0" 에러가 남 — 반드시 보이게 된 뒤에
+// 호출해야 함. offsetParent 체크는 PC에서 #left-panel 자체가
+// display:none이라 모바일 전용 슬롯(#map-ad-slot)이 hidden을 풀어도 여전히
+// 안 보이는 경우까지 걸러줌(부모 어딘가 display:none이면 offsetParent가 null).
+function updateListAdSlot(slotId, hasItems) {
+    const el = document.getElementById(slotId);
+    if (!el) return;
+    el.hidden = !hasItems;
+    if (hasItems && !el.dataset.adPushed && el.offsetParent !== null) {
+        el.dataset.adPushed = '1';
+        // hidden 속성을 막 풀어준 직후라 이 시점에 바로 push()하면 레이아웃이
+        // 아직 안 굳어서 너비를 0으로 읽는 경우가 있었음("No slot size for
+        // availableWidth=0") — 브라우저가 레이아웃을 한 번 확정 짓도록 rAF로
+        // 한 틱 미뤄서 호출.
+        requestAnimationFrame(() => {
+            try {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (e) {
+                console.error('광고 슬롯 초기화 실패:', e);
+            }
+        });
+    }
+}
+window.updateListAdSlot = updateListAdSlot;

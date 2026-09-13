@@ -134,6 +134,16 @@
         box-shadow: 0 0 0 1.5px var(--text-primary);
     }
     #persistent-left-panel .dinner-badge { background: #EEF2FF; color: #4F46E5; padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-left: 6px; }
+    /* 애드센스 반려 대응: 지도 탭 식당 리스트 맨 아래 광고 슬롯(js/index.js
+       updateListAdSlot이 hidden 토글) — 카드와 같은 톤으로 튀지 않게 */
+    #persistent-left-panel .map-list-ad-slot {
+        padding: 10px 12px; background: var(--bg-surface); border-radius: 14px;
+        border: 1px solid var(--border-light); margin-top: 4px;
+    }
+    #persistent-left-panel .map-list-ad-label {
+        font-size: 10px; font-weight: 700; color: var(--text-secondary);
+        margin-bottom: 6px; letter-spacing: 0.3px;
+    }
 
     /* 검색창 스타일 */
     #plpSearchInput {

@@ -409,6 +409,10 @@ window.filterData = function() {
     // 이미 위에서 끝난 상태라 "상위 N개"는 항상 사용자에게 가장 관련 있는 항목.
     const listItems = filtered.slice(0, LIST_RENDER_LIMIT);
 
+    // 즐겨찾기 탭도 이 파일(map-tab.html)을 재사용하는데, 광고는 지도 탭에만
+    // 넣기로 했으므로 즐겨찾기 모드에서는 항목이 있어도 광고 슬롯을 띄우지 않음
+    updateListAdSlot('map-ad-slot', !window.isFavoriteMode && listItems.length > 0);
+
     document.getElementById('restaurantCards').innerHTML = listItems.map((r, index) => {
         const isDinner = r.hours.includes('석식') || /17:|18:|19:/.test(r.hours);
         const popCount = window.popularityData[r.id] || 0;

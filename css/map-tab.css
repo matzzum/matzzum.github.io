@@ -238,9 +238,19 @@ body.dark-theme .edit-field-row input[type="text"]:focus { box-shadow: 0 0 0 3px
     .filter-item { min-height: 30px; }
 }
 
-.restaurant-card { 
-    padding: 12px 14px; background: var(--bg-surface); border-radius: 12px; 
+.restaurant-card {
+    padding: 12px 14px; background: var(--bg-surface); border-radius: 12px;
     margin-bottom: 8px; border: 1px solid var(--border-light); cursor: pointer;
+}
+/* 애드센스 반려 대응: 지도 탭 식당 리스트 맨 아래 광고 슬롯(js/map-tab.js
+   updateListAdSlot이 hidden 토글) — 카드와 같은 톤으로 튀지 않게 */
+.map-list-ad-slot {
+    padding: 10px 12px; background: var(--bg-surface); border-radius: 12px;
+    border: 1px solid var(--border-light); margin-top: 4px;
+}
+.map-list-ad-label {
+    font-size: 10px; font-weight: 700; color: var(--text-secondary);
+    margin-bottom: 6px; letter-spacing: 0.3px;
 }
 #searchInput {
     width: 100%; padding: 11px 15px; border-radius: 12px;
