@@ -265,7 +265,7 @@ function renderRankingList(counts, metaList) {
 
     const view = document.getElementById('rf-ranking-view');
     if (rows.length === 0) {
-        view.innerHTML = `<div class="rf-empty">아직 랭킹에 오를 만큼(한줄평 ${MIN_REVIEWS_FOR_RANKING}건 이상) 쌓인 식당이 없어요.<br>한줄평을 남기면 랭킹이 채워져요! ✍️</div>`;
+        view.innerHTML = `<div class="rf-empty">아직 랭킹에 오를 만큼(한줄평 ${MIN_REVIEWS_FOR_RANKING}건 이상) 쌓인 식당이 없어요.<br>한줄평이 ${MIN_REVIEWS_FOR_RANKING}개 이상 모인 식당부터 순위에 올라요. 식당 상세 화면에서 첫 한줄평을 남겨 보세요. ✍️</div>`;
         return;
     }
 
@@ -359,7 +359,7 @@ function startFeedListener() {
             });
 
             if (items.length === 0) {
-                view.innerHTML = `<div class="rf-empty">아직 등록된 한줄평이 없어요.<br>지도에서 식당에 한줄평을 남겨보세요! ✍️</div>`;
+                view.innerHTML = `<div class="rf-empty"><b>아직 올라온 한줄평이 없어요</b><br>식당 상세 화면 아래쪽에서 첫 한줄평을 남겨 보세요. 닉네임은 자동으로 채워져요. ✍️</div>`;
                 return;
             }
 

@@ -413,6 +413,16 @@ window.filterData = function() {
     // 넣기로 했으므로 즐겨찾기 모드에서는 항목이 있어도 광고 슬롯을 띄우지 않음
     updateListAdSlot('map-ad-slot', !window.isFavoriteMode && listItems.length > 0);
 
+    // 항목이 0개면 빈 화면 안내(기획서 광고·정책 04번): 즐겨찾기 탭에서 저장한 게
+    // 아예 없으면 "저장하는 방법" 안내, 그 외(검색·필터 결과 없음 등)는 검색 안내
+    if (listItems.length === 0) {
+        const allFavs = window.parent.getFavorites ? window.parent.getFavorites() : [];
+        document.getElementById('restaurantCards').innerHTML =
+            buildEmptyStateHtml(window.isFavoriteMode && allFavs.length === 0 ? 'favorites' : 'search');
+        renderMarkers();
+        return;
+    }
+
     document.getElementById('restaurantCards').innerHTML = listItems.map((r, index) => {
         const isDinner = r.hours.includes('석식') || /17:|18:|19:/.test(r.hours);
         const popCount = window.popularityData[r.id] || 0;

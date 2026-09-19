@@ -428,3 +428,29 @@
             margin-top: var(--ad-banner-h);
         }
     }
+
+/* ===== 빈 화면 안내 (buildEmptyStateHtml — assets/js/shared.js) =====
+   PC 좌측 패널·모바일 리스트 공용이라 미디어쿼리 밖에 둠. 광고 슬롯은 넣지 않음. */
+.empty-state {
+    margin: 12px; padding: 22px 18px; text-align: center;
+    background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: 16px;
+}
+.empty-state-title { font-size: 1em; font-weight: 800; color: var(--text-primary); margin-bottom: 6px; }
+.empty-state-text { font-size: 0.85em; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }
+.empty-state-steps {
+    list-style: none; margin: 14px auto 0; padding: 12px 14px; max-width: 280px; text-align: left;
+    background: var(--primary-light); border-radius: 12px;
+}
+.empty-state-steps li { font-size: 0.82em; color: var(--text-primary); line-height: 1.5; margin-bottom: 4px; word-break: keep-all; }
+.empty-state-steps li:last-child { margin-bottom: 0; }
+.empty-state-steps li span { color: var(--primary); font-weight: 800; margin-right: 6px; }
+.empty-state-btn {
+    margin-top: 14px; padding: 10px 18px; border: none; border-radius: 10px;
+    background: var(--primary); color: #fff; font-family: inherit; font-size: 0.88em; font-weight: 700; cursor: pointer;
+}
+.empty-state-note { margin-top: 12px; font-size: 0.75em; color: var(--text-secondary); line-height: 1.5; word-break: keep-all; }
+
+/* 지도 홈 최초 로딩 중 — "불러오는 중..." + 서비스 한 줄 소개(meta description과 같은 문장) */
+.list-loading { padding: 24px 16px; text-align: center; }
+.list-loading-title { font-size: 0.85em; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
+.list-loading-intro { font-size: 0.82em; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }

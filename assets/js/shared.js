@@ -96,3 +96,30 @@ function updateListAdSlot(slotId, hasItems) {
     }
 }
 window.updateListAdSlot = updateListAdSlot;
+
+// ----- 빈 화면 안내 문구 (기획서 광고·정책 04번 "빈 화면 안내 문구") -----
+// 리스트가 비어 있을 때 아무것도 안 보이는 대신 "무엇을 하면 채워지는지"를
+// 글로 안내(PC 좌측 패널 index.js · 모바일/즐겨찾기 리스트 map-tab.js 공용).
+// 신규 방문자는 전원 즐겨찾기 0개 상태로 시작하므로 사용성 개선인 동시에
+// "콘텐츠 없는 화면" 유형을 줄이는 조치. 숨김 텍스트 없이 전부 눈에 보이게 표시.
+function buildEmptyStateHtml(kind) {
+    if (kind === 'favorites') {
+        return `<div class="empty-state">
+            <div class="empty-state-title">아직 즐겨찾기한 식당이 없어요</div>
+            <div class="empty-state-text">자주 가는 구내식당을 저장해 두면 여기서 바로 볼 수 있어요.</div>
+            <ol class="empty-state-steps">
+                <li><span>①</span>지도 홈에서 식당을 찾아요</li>
+                <li><span>②</span>목록 카드 오른쪽의 ☆ 별을 눌러요</li>
+                <li><span>③</span>저장한 식당이 이 탭에 모여요</li>
+            </ol>
+            <button type="button" class="empty-state-btn" onclick="window.loadTab('map')">지도에서 식당 찾기</button>
+            <div class="empty-state-note">즐겨찾기는 이 기기에만 저장돼요. 브라우저 데이터를 지우면 사라져요.</div>
+        </div>`;
+    }
+    // 'search' — 검색·지역·석식 필터 결과가 0건일 때
+    return `<div class="empty-state">
+        <div class="empty-state-title">검색 결과가 없어요</div>
+        <div class="empty-state-text">식당 이름을 줄이거나, 지역을 "전체"로 바꿔 다시 찾아보세요.</div>
+    </div>`;
+}
+window.buildEmptyStateHtml = buildEmptyStateHtml;

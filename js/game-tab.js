@@ -418,7 +418,12 @@ function showResult(r) {
 function resetLunchResult() {
     document.getElementById('resultLabel').style.display = 'block';
     document.getElementById('resultName').innerHTML = '<span class="emoji-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9a2.8 2.8 0 1 1 4.3 2.4c-.8.5-1.5 1-1.5 2.1"/><circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none"/></svg></span>무엇이 나올까요?';
-    document.getElementById('resultMeta').textContent = '돌려돌려 버튼을 눌러 운명을 확인하세요!';
+    // 후보(조각)가 하나도 없으면 돌릴 수 없으므로 "무엇이 필요한지 + 하는 방법"을 안내
+    // (기획서 광고·정책 04번 빈 화면 안내 문구). 위치 미허용이어도 자동 배치는
+    // 저장한 집/회사 위치 또는 목록 순서로 채워지니 그 점도 함께 안내.
+    document.getElementById('resultMeta').textContent = slots.some(Boolean)
+        ? '돌려돌려 버튼을 눌러 운명을 확인하세요!'
+        : '룰렛에 올릴 식당이 아직 없어요. 조각을 눌러 식당 이름을 입력하거나, "자동 배치"로 가까운 식당을 채워 보세요. (위치를 허용하면 내 주변 식당으로 채워져요)';
     document.getElementById('resultLinks').innerHTML = '';
 }
 

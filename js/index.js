@@ -263,6 +263,14 @@ window.getRestaurantsData = function() {
         // 필터링 결과가 많아도 매번 DOM 렌더링 부담이 늘어나지 않게 함.
         const listItems = filtered.slice(0, PLP_LIST_RENDER_LIMIT);
 
+        // 항목이 0개면 빈 화면 안내(기획서 광고·정책 04번) — map-tab.js filterData와 동일 규칙
+        if (listItems.length === 0) {
+            document.getElementById('plpRestaurantCards').innerHTML =
+                buildEmptyStateHtml(window.isFavoriteMode && window.getFavorites().length === 0 ? 'favorites' : 'search');
+            updateListAdSlot('plp-ad-slot', false);
+            return;
+        }
+
         document.getElementById('plpRestaurantCards').innerHTML = listItems.map((r, index) => {
             const isDinner = r.hours.includes('석식') || /17:|18:|19:/.test(r.hours);
             const popCount = (window.popularityData && window.popularityData[r.id]) || 0;
