@@ -454,3 +454,8 @@
 .list-loading { padding: 24px 16px; text-align: center; }
 .list-loading-title { font-size: 0.85em; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
 .list-loading-intro { font-size: 0.82em; color: var(--text-secondary); line-height: 1.55; word-break: keep-all; }
+
+/* 리스트 하단 안내 링크(서비스 소개·이용 가이드·FAQ·개인정보처리방침) — 정적 콘텐츠 페이지로 연결 */
+.site-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; padding: 18px 12px 8px; }
+.site-links a { font-size: 0.75em; font-weight: 600; color: var(--text-secondary); text-decoration: none; }
+.site-links a:hover { color: var(--primary); text-decoration: underline; }

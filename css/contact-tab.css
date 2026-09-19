@@ -526,3 +526,13 @@ body.dark-theme .settings-row:active { background: rgba(255,255,255,0.06); }
     #settings-container { max-width: 520px; margin: 0 auto; }
     .settings-large-title { padding-top: 32px; }
 }
+
+/* 서비스 소개 화면 — about.html 본문(p/ul)을 카드 안에 그릴 때 */
+.about-body { font-size: 0.85em; color: var(--settings-text); line-height: 1.7; word-break: keep-all; }
+.about-body p { margin: 0 0 8px; }
+.about-body p:last-child { margin-bottom: 0; }
+.about-body ul { margin: 0; padding-left: 18px; }
+.about-body li { margin-bottom: 6px; }
+.about-body a { color: var(--primary); }
+.about-more-links { display: flex; gap: 16px; justify-content: center; margin-top: 16px; font-size: 0.85em; font-weight: 600; }
+.about-more-links a { color: var(--primary); text-decoration: none; }

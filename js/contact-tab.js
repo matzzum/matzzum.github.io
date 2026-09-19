@@ -109,6 +109,47 @@ const NOTICES = [
 
 const SCREENS = ['main', 'notice', 'notice-detail', 'inquiry', 'howto', 'system', 'favorite-places', 'locsearch', 'about', 'privacy', 'sources'];
 
+// 서비스 소개 화면 — about.html의 #about-content(section.about-section)를 가져와 앱 카드
+// 형태(.notice-item)로 그림. 웹 페이지와 앱 화면이 같은 원본 문구를 쓰게 하려는 것
+// (기획서 광고·정책 04번 "서비스 소개 원본 하나"). 한 번 불러오면 다시 안 받음.
+let aboutLoaded = false;
+async function loadAboutContent() {
+    if (aboutLoaded) return;
+    const box = document.getElementById('about-dynamic');
+    if (!box) return;
+    try {
+        const res = await fetch(`./about.html?v=${Date.now()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+        const sections = doc.querySelectorAll('#about-content .about-section');
+        if (!sections.length) throw new Error('about-content 없음');
+        box.innerHTML = '';
+        sections.forEach(sec => {
+            const card = document.createElement('div');
+            card.className = 'notice-item';
+            card.style.cursor = 'default';
+            const meta = document.createElement('div');
+            meta.className = 'notice-meta';
+            const badge = document.createElement('span');
+            badge.className = 'notice-badge';
+            badge.textContent = `${sec.dataset.icon || ''} ${sec.querySelector('h2').textContent}`.trim();
+            meta.appendChild(badge);
+            const body = document.createElement('div');
+            body.className = 'about-body';
+            Array.from(sec.children).filter(el => el.tagName !== 'H2').forEach(el => body.appendChild(el.cloneNode(true)));
+            // 링크는 새 탭으로(앱 화면을 벗어나지 않도록)
+            body.querySelectorAll('a').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+            card.appendChild(meta);
+            card.appendChild(body);
+            box.appendChild(card);
+        });
+        aboutLoaded = true;
+    } catch (e) {
+        console.error('서비스 소개 불러오기 실패:', e);
+        box.innerHTML = '<div class="notice-item" style="cursor:default; font-size:0.85em;">내용을 불러오지 못했어요. <a href="about.html" target="_blank" rel="noopener">서비스 소개 페이지</a>에서 확인해 주세요.</div>';
+    }
+}
+
 window.showScreen = function(name) {
     SCREENS.forEach(s => {
         const el = document.getElementById(`screen-${s}`);
@@ -123,6 +164,7 @@ window.showScreen = function(name) {
         }
     });
 
+    if (name === 'about') loadAboutContent();
     if (name === 'notice') renderNoticeList();
     if (name === 'inquiry' && currentInqTab === 'list') loadInquiries();
     if (name === 'system') {

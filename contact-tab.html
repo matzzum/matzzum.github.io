@@ -96,7 +96,7 @@
                         • <b>식당 카드</b>: 탭하여 위치와 상세 정보를 볼 수 있어요.<br>
                         • <b>🔵 내 위치</b>: 필터 메뉴 우측의 파란 점 버튼으로 현위치를 찾아요.<br>
                         • <b>🏠 스마트 홈</b>: 내 현재 위치에서 더 가까운 곳(집/회사)을 버튼 하나로 찾아가요.<br>
-                        • <b>검색/필터</b>: 식당 이름이나 가격대별로 빠르게 필터링해요.
+                        • <b>검색/필터</b>: 식당 이름 검색과 지역·거리순·석식 필터로 빠르게 좁혀요.
                     </div>
                 </div>
 
@@ -146,7 +146,10 @@
         </div>
     </div>
 
-    <!-- ===== 서비스 소개 화면 ===== -->
+    <!-- ===== 서비스 소개 화면 =====
+         본문은 about.html(웹 페이지)과 같은 원본을 씀 — showScreen('about') 때
+         contact-tab.js의 loadAboutContent()가 about.html의 #about-content를 가져와
+         카드 형태로 그려줌(tools/build-static-pages.js가 about.html을 생성). -->
     <div id="screen-about" class="sub-screen">
         <div class="settings-header">
             <div class="settings-header-inner">
@@ -158,56 +161,12 @@
             </div>
         </div>
         <div class="sub-content">
-            <div style="display:flex; flex-direction:column; gap:12px;">
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
-                        <span class="notice-badge">🍚 맛쩜이란?</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        회사 주변 구내식당·한식뷔페 정보를 한곳에 모아, 매일 점심 메뉴 고민을 덜어드리는 서비스예요.<br>
-                        위치 정보는 물론 실제 이용자들의 한줄평과 인기 랭킹도 함께 확인할 수 있어요. 가격·영업시간은 아직 확인된 곳이 적어서, 표본이 쌓이는 대로 순차적으로 채워가고 있어요.
-                    </div>
-                </div>
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
-                        <span class="notice-badge">🧭 이렇게 써보세요</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        지도 홈에서 가까운 순으로 식당을 훑어보고, 랭킹·피드 탭에서 다른 이용자들의 한줄평을 살펴본 뒤, 그래도 고르기 어려우면 점심 룰렛으로 재미있게 오늘 메뉴를 정해보세요.
-                    </div>
-                </div>
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
-                        <span class="notice-badge">🙋 이런 분께 추천해요</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        • 매일 점심 메뉴를 고민하는 직장인<br>
-                        • 회사 근처에 어떤 구내식당이 있는지 잘 모르는 분<br>
-                        • 점심 룰렛으로 재미있게 오늘의 메뉴를 정하고 싶은 분
-                    </div>
-                </div>
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
-                        <span class="notice-badge">🏷️ 맛쩜이라는 이름</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        처음에는 "맛점"이라는 이름으로 시작했지만, 발음은 같아도 표기가 더 뚜렷하게 남도록 지금의 "맛쩜"으로 이름을 다듬었어요.
-                    </div>
-                </div>
-
-                <div class="notice-item" style="cursor:default;">
-                    <div class="notice-meta">
-                        <span class="notice-badge">💬 문의</span>
-                    </div>
-                    <div style="font-size:0.85em; color:var(--settings-text); line-height:1.7; word-break:keep-all;">
-                        서비스 이용 중 궁금한 점이나 제안하고 싶은 내용이 있다면 [설정 → 문의하기]로 편하게 남겨주세요.
-                    </div>
-                </div>
-
+            <div id="about-dynamic" style="display:flex; flex-direction:column; gap:12px;">
+                <div class="notice-item" style="cursor:default; font-size:0.85em; color:var(--settings-text);">불러오는 중...</div>
+            </div>
+            <div class="about-more-links">
+                <a href="guide.html" target="_blank" rel="noopener">이용 가이드</a>
+                <a href="faq.html" target="_blank" rel="noopener">자주 묻는 질문</a>
             </div>
         </div>
     </div>

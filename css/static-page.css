@@ -1,0 +1,81 @@
+/* 정적 콘텐츠 페이지(about/guide/faq/region/*) 공용 스타일 — tools/build-static-pages.js가 생성.
+   개인정보처리방침(privacy-policy.html)과 같은 톤(Pretendard, 변수, .wrap)을 따름. */
+:root {
+  --primary: #3182F6;
+  --primary-light: #EBF3FE;
+  --bg-app: #F2F4F6;
+  --bg-surface: #FFFFFF;
+  --text-primary: #191F28;
+  --text-secondary: #6B7684;
+  --border-light: #E5E8EB;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #4B93FF;
+    --primary-light: rgba(75, 147, 255, 0.15);
+    --bg-app: #101216;
+    --bg-surface: #1C1C1E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #98989E;
+    --border-light: #2C2C2E;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif;
+  line-height: 1.7;
+}
+.wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--text-secondary); text-decoration: none; font-size: 0.9em; font-weight: 600;
+  margin-bottom: 20px;
+}
+.back-link:hover { color: var(--primary); }
+h1 { font-size: 1.6em; font-weight: 900; margin: 0 0 6px; word-break: keep-all; }
+.updated { color: var(--text-secondary); font-size: 0.85em; margin-bottom: 28px; }
+.lede {
+  background: var(--bg-surface); border: 1px solid var(--border-light);
+  border-radius: 12px; padding: 16px 18px; font-size: 0.9em; color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+section { margin-bottom: 28px; }
+h2 {
+  font-size: 1.05em; font-weight: 800; margin: 0 0 12px;
+  display: inline-block; background: var(--primary); color: #fff;
+  padding: 3px 12px; border-radius: 20px; word-break: keep-all;
+}
+p, li { font-size: 0.92em; word-break: keep-all; }
+ul { margin: 8px 0; padding-left: 20px; }
+li { margin-bottom: 4px; }
+a { color: var(--primary); }
+table {
+  width: 100%; border-collapse: collapse; font-size: 0.85em;
+  background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: 12px; overflow: hidden;
+}
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+th { color: var(--text-secondary); font-weight: 700; width: 40%; }
+tr:last-child th, tr:last-child td { border-bottom: none; }
+.note { color: var(--text-secondary); font-size: 0.8em; margin-top: 8px; }
+
+/* FAQ — 질문마다 카드처럼 */
+.faq-item h2 { display: block; background: transparent; color: var(--text-primary); padding: 0; border-radius: 0; font-size: 1em; }
+.faq-item p { margin: 0; }
+
+/* 지역 페이지 식당 목록 */
+.restaurant-list { list-style: none; padding: 0; margin: 12px 0 0; border: 1px solid var(--border-light); border-radius: 12px; background: var(--bg-surface); overflow: hidden; }
+.restaurant-list li { margin: 0; padding: 9px 14px; border-bottom: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 1px; }
+.restaurant-list li:last-child { border-bottom: none; }
+.restaurant-list li b { font-size: 0.92em; }
+.restaurant-list li span { font-size: 0.8em; color: var(--text-secondary); }
+
+/* 하단 링크 */
+.page-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 32px; font-size: 0.85em; }
+.page-links + .page-links { margin-top: 10px; }
+.page-links a { text-decoration: none; font-weight: 600; }
+.page-links a:hover { text-decoration: underline; }
+.region-links span { color: var(--text-secondary); }
+footer { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--border-light); color: var(--text-secondary); font-size: 0.8em; }
